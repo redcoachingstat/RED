@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RED System — 2015–16 Season</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0e1a; }
+        ::-webkit-scrollbar-thumb { background: #C9A84C; border-radius: 4px; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #0a0e1a; color: #e0e0e0; line-height: 1.6; overflow-x: hidden; }
+        header { background: linear-gradient(135deg, #141929 0%, #1a1f2e 100%); border-bottom: 2px solid #C9A84C; padding: 1.5rem 2rem; }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .logo-section h1 { font-size: 2rem; font-weight: 700; color: #C9A84C; letter-spacing: 4px; }
+        .logo-section .subtitle { font-size: 0.85rem; color: #888; margin-top: 2px; }
+        .season-badge { background: #C9A84C; color: #0a0e1a; padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; }
+        .back-link { color: #C9A84C; text-decoration: none; font-size: 0.85rem; border: 1px solid #C9A84C; padding: 6px 14px; border-radius: 6px; transition: all 0.2s; }
+        .back-link:hover { background: #C9A84C; color: #0a0e1a; }
+        main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .subtitle-banner { background: linear-gradient(135deg, #1a1f2e, #141929); border: 1px solid #2a3040; border-left: 4px solid #C9A84C; border-radius: 8px; padding: 1rem 1.5rem; margin-bottom: 2rem; }
+        .subtitle-banner h2 { color: #C9A84C; font-size: 1rem; font-weight: 600; }
+        .subtitle-banner p { color: #aaa; font-size: 0.85rem; margin-top: 4px; }
+        .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem; }
+        .results-info { font-size: 0.85rem; color: #aaa; }
+        .search-box { background: #1a1f2e; border: 1px solid #2a3040; color: #e0e0e0; padding: 8px 14px; border-radius: 8px; font-size: 0.9rem; width: 240px; font-family: inherit; }
+        .search-box:focus { outline: none; border-color: #C9A84C; }
+        .table-wrapper { background: #141929; border: 1px solid #2a3040; border-radius: 12px; overflow: hidden; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        thead { background: #1a1f2e; border-bottom: 2px solid #C9A84C; }
+        th { padding: 14px 16px; text-align: left; font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; color: #C9A84C; text-transform: uppercase; white-space: nowrap; cursor: pointer; user-select: none; }
+        th:hover { background: #2a3040; }
+        td { padding: 13px 16px; font-size: 0.9rem; border-bottom: 1px solid #1e2535; white-space: nowrap; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(201, 168, 76, 0.04); }
+        .rank-cell { font-weight: 700; color: #888; width: 60px; }
+        .rank-medal { margin-right: 6px; }
+        .score-cell { font-weight: 700; font-size: 1rem; font-family: monospace; }
+        .score-cell.excellent { color: #22c55e; }
+        .score-cell.good { color: #84cc16; }
+        .score-cell.neutral { color: #C9A84C; }
+        .score-cell.poor { color: #f97316; }
+        .score-cell.bad { color: #ef4444; }
+        .record-cell { font-family: monospace; font-size: 0.85rem; color: #aaa; }
+        .team-name { font-weight: 600; }
+        .coach-name { color: #aaa; font-size: 0.85rem; }
+        .formula-box { background: #141929; border: 1px solid #2a3040; border-left: 4px solid #C9A84C; border-radius: 8px; padding: 1.5rem; margin-top: 2rem; }
+        .formula-box h3 { color: #C9A84C; margin-bottom: 0.5rem; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; }
+        .formula-box p { color: #aaa; font-size: 0.85rem; line-height: 1.7; }
+        .formula-code { background: #0a0e1a; border: 1px solid #2a3040; border-radius: 6px; padding: 10px 14px; font-family: monospace; font-size: 0.85rem; color: #C9A84C; margin: 0.5rem 0; }
+        .sort-indicator { margin-left: 4px; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-content">
+        <div class="logo-section">
+            <h1>RED</h1>
+            <div class="subtitle">Rating of Elite Dominance — Historical Archive</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+            <div class="season-badge">2015–16 Season</div>
+            <a href="../dashboard/index.html" class="back-link">← 2025-26 Live</a>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="subtitle-banner">
+        <h2>The 73-Win Warriors Era</h2>
+        <p>Final regular season standings · All RED scores calculated using the same hybrid formula as the live 2025–26 dashboard</p>
+    </div>
+
+    <div class="results-header">
+        <div class="results-info">
+            <strong id="teamCount">0</strong> coaches · Final standings · <span style="color:#C9A84C;">Historical data</span>
+        </div>
+        <input type="text" class="search-box" id="searchBox" placeholder="Search team or coach…">
+    </div>
+
+    <div class="table-wrapper">
+        <table id="leaderboardTable">
+            <thead>
+                <tr>
+                    <th data-sort="rank">Rank</th>
+                    <th data-sort="team">Team</th>
+                    <th data-sort="coach">Coach</th>
+                    <th data-sort="red">RED Score</th>
+                    <th data-sort="rpg">RED/G</th>
+                    <th data-sort="record">Record</th>
+                    <th data-sort="gp">GP</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboardBody"></tbody>
+        </table>
+    </div>
+
+    <div class="formula-box">
+        <h3>RED Formula</h3>
+        <p>RED is a descriptive coaching metric. It rewards coaches who win more games than expected and do so efficiently.</p>
+        <div class="formula-code">RED = (0.70 × WinsAbove.500) + (0.30 × PythagoreanDelta)</div>
+        <p><strong style="color:#e0e0e0;">WinsAbove.500</strong> = actual wins − (games × 0.5) &nbsp;·&nbsp; <strong style="color:#e0e0e0;">PythagoreanDelta</strong> = actual wins − expected wins (from point differential). Exponent: 13.91 (NBA standard).</p>
+    </div>
+</main>
+
+<script>
+    const RAW_TEAMS = [
+        {
+                "name": "Golden State Warriors",
+                "coach": "Steve Kerr",
+                "wins": 73,
+                "losses": 9,
+                "ptsFor": 114.9,
+                "ptsAgainst": 104.0
+        },
+        {
+                "name": "San Antonio Spurs",
+                "coach": "Gregg Popovich",
+                "wins": 67,
+                "losses": 15,
+                "ptsFor": 103.5,
+                "ptsAgainst": 92.9
+        },
+        {
+                "name": "Oklahoma City Thunder",
+                "coach": "Billy Donovan",
+                "wins": 55,
+                "losses": 27,
+                "ptsFor": 106.3,
+                "ptsAgainst": 103.3
+        },
+        {
+                "name": "Cleveland Cavaliers",
+                "coach": "Tyronn Lue",
+                "wins": 57,
+                "losses": 25,
+                "ptsFor": 102.7,
+                "ptsAgainst": 100.0
+        },
+        {
+                "name": "Toronto Raptors",
+                "coach": "Dwane Casey",
+                "wins": 56,
+                "losses": 26,
+                "ptsFor": 102.7,
+                "ptsAgainst": 100.5
+        },
+        {
+                "name": "Los Angeles Clippers",
+                "coach": "Doc Rivers",
+                "wins": 53,
+                "losses": 29,
+                "ptsFor": 107.2,
+                "ptsAgainst": 105.0
+        },
+        {
+                "name": "Miami Heat",
+                "coach": "Erik Spoelstra",
+                "wins": 48,
+                "losses": 34,
+                "ptsFor": 96.0,
+                "ptsAgainst": 97.4
+        },
+        {
+                "name": "Atlanta Hawks",
+                "coach": "Mike Budenholzer",
+                "wins": 48,
+                "losses": 34,
+                "ptsFor": 102.9,
+                "ptsAgainst": 103.3
+        },
+        {
+                "name": "Boston Celtics",
+                "coach": "Brad Stevens",
+                "wins": 48,
+                "losses": 34,
+                "ptsFor": 100.0,
+                "ptsAgainst": 99.8
+        },
+        {
+                "name": "Charlotte Hornets",
+                "coach": "Steve Clifford",
+                "wins": 48,
+                "losses": 34,
+                "ptsFor": 104.0,
+                "ptsAgainst": 104.0
+        },
+        {
+                "name": "Indiana Pacers",
+                "coach": "Frank Vogel",
+                "wins": 45,
+                "losses": 37,
+                "ptsFor": 103.2,
+                "ptsAgainst": 103.2
+        },
+        {
+                "name": "Detroit Pistons",
+                "coach": "Stan Van Gundy",
+                "wins": 44,
+                "losses": 38,
+                "ptsFor": 100.3,
+                "ptsAgainst": 100.5
+        },
+        {
+                "name": "Portland Trail Blazers",
+                "coach": "Terry Stotts",
+                "wins": 44,
+                "losses": 38,
+                "ptsFor": 103.6,
+                "ptsAgainst": 105.0
+        },
+        {
+                "name": "Memphis Grizzlies",
+                "coach": "Dave Joerger",
+                "wins": 42,
+                "losses": 40,
+                "ptsFor": 96.7,
+                "ptsAgainst": 97.7
+        },
+        {
+                "name": "Dallas Mavericks",
+                "coach": "Rick Carlisle",
+                "wins": 42,
+                "losses": 40,
+                "ptsFor": 102.7,
+                "ptsAgainst": 103.7
+        },
+        {
+                "name": "Chicago Bulls",
+                "coach": "Fred Hoiberg",
+                "wins": 42,
+                "losses": 40,
+                "ptsFor": 101.5,
+                "ptsAgainst": 101.0
+        },
+        {
+                "name": "Washington Wizards",
+                "coach": "Randy Wittman",
+                "wins": 41,
+                "losses": 41,
+                "ptsFor": 101.9,
+                "ptsAgainst": 101.9
+        },
+        {
+                "name": "Houston Rockets",
+                "coach": "J.B. Bickerstaff",
+                "wins": 41,
+                "losses": 41,
+                "ptsFor": 105.1,
+                "ptsAgainst": 107.0
+        },
+        {
+                "name": "Utah Jazz",
+                "coach": "Quin Snyder",
+                "wins": 40,
+                "losses": 42,
+                "ptsFor": 100.0,
+                "ptsAgainst": 101.0
+        },
+        {
+                "name": "Orlando Magic",
+                "coach": "Scott Skiles",
+                "wins": 35,
+                "losses": 47,
+                "ptsFor": 98.0,
+                "ptsAgainst": 100.0
+        },
+        {
+                "name": "New Orleans Pelicans",
+                "coach": "Alvin Gentry",
+                "wins": 30,
+                "losses": 52,
+                "ptsFor": 104.0,
+                "ptsAgainst": 113.0
+        },
+        {
+                "name": "Denver Nuggets",
+                "coach": "Michael Malone",
+                "wins": 33,
+                "losses": 49,
+                "ptsFor": 105.0,
+                "ptsAgainst": 109.0
+        },
+        {
+                "name": "Sacramento Kings",
+                "coach": "George Karl",
+                "wins": 33,
+                "losses": 49,
+                "ptsFor": 98.5,
+                "ptsAgainst": 106.0
+        },
+        {
+                "name": "Milwaukee Bucks",
+                "coach": "Jason Kidd",
+                "wins": 33,
+                "losses": 49,
+                "ptsFor": 103.0,
+                "ptsAgainst": 108.0
+        },
+        {
+                "name": "Minnesota Timberwolves",
+                "coach": "Sam Mitchell",
+                "wins": 29,
+                "losses": 53,
+                "ptsFor": 99.0,
+                "ptsAgainst": 107.0
+        },
+        {
+                "name": "New York Knicks",
+                "coach": "Kurt Rambis",
+                "wins": 32,
+                "losses": 50,
+                "ptsFor": 103.0,
+                "ptsAgainst": 109.0
+        },
+        {
+                "name": "Phoenix Suns",
+                "coach": "Jeff Hornacek",
+                "wins": 23,
+                "losses": 59,
+                "ptsFor": 104.0,
+                "ptsAgainst": 112.0
+        },
+        {
+                "name": "Brooklyn Nets",
+                "coach": "Lionel Hollins",
+                "wins": 21,
+                "losses": 61,
+                "ptsFor": 97.0,
+                "ptsAgainst": 107.5
+        },
+        {
+                "name": "Los Angeles Lakers",
+                "coach": "Byron Scott",
+                "wins": 17,
+                "losses": 65,
+                "ptsFor": 100.0,
+                "ptsAgainst": 113.0
+        },
+        {
+                "name": "Philadelphia 76ers",
+                "coach": "Brett Brown",
+                "wins": 10,
+                "losses": 72,
+                "ptsFor": 95.0,
+                "ptsAgainst": 110.0
+        }
+];
+
+    let allResults = [];
+    let currentSort = { column: 'rank', direction: 'asc' };
+
+    function calculateRED(wins, losses, ptsFor, ptsAgainst) {
+        const gamesPlayed = wins + losses;
+        const winsAboveAvg = wins - (gamesPlayed * 0.5);
+        const EXP = 13.91;
+        const pfPow = Math.pow(ptsFor, EXP);
+        const paPow = Math.pow(ptsAgainst, EXP);
+        const pythWinPct = pfPow / (pfPow + paPow);
+        const expectedWins = pythWinPct * gamesPlayed;
+        const pythDelta = wins - expectedWins;
+        const redScore = (0.70 * winsAboveAvg) + (0.30 * pythDelta);
+        const redPerGame = redScore / gamesPlayed;
+        return { redScore, gamesPlayed, expectedWins: parseFloat(expectedWins.toFixed(1)), redPerGame };
+    }
+
+    function getRedClass(score) {
+        if (score > 6) return 'excellent';
+        if (score > 2) return 'good';
+        if (score > -2) return 'neutral';
+        if (score > -6) return 'poor';
+        return 'bad';
+    }
+
+    function medal(rank) {
+        if (rank === 1) return '🥇';
+        if (rank === 2) return '🥈';
+        if (rank === 3) return '🥉';
+        return '';
+    }
+
+    function render(data) {
+        const tbody = document.getElementById('leaderboardBody');
+        tbody.innerHTML = '';
+        data.forEach((t, i) => {
+            const rank = i + 1;
+            const cls = getRedClass(t.redScore);
+            const sg = t.redScore >= 0 ? '+' : '';
+            const pg = t.redPerGame >= 0 ? '+' : '';
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="rank-cell"><span class="rank-medal">${medal(rank)}</span>${rank}</td>
+                <td><div class="team-name">${t.name}</div></td>
+                <td><div class="coach-name">${t.coach}</div></td>
+                <td class="score-cell ${cls}">${sg}${t.redScore.toFixed(2)}</td>
+                <td style="color:#aaa;font-family:monospace;font-size:0.85rem;">${pg}${t.redPerGame.toFixed(3)}</td>
+                <td class="record-cell">${t.wins}-${t.losses}</td>
+                <td style="color:#666;font-size:0.85rem;">${t.gamesPlayed}</td>
+            `;
+            tbody.appendChild(row);
+        });
+        document.getElementById('teamCount').textContent = data.length;
+    }
+
+    function sortData(data, col, dir) {
+        return [...data].sort((a, b) => {
+            let av, bv;
+            switch(col) {
+                case 'rank': av = allResults.indexOf(a); bv = allResults.indexOf(b); break;
+                case 'team': return dir === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+                case 'coach': return dir === 'asc' ? a.coach.localeCompare(b.coach) : b.coach.localeCompare(a.coach);
+                case 'red': av = a.redScore; bv = b.redScore; break;
+                case 'rpg': av = a.redPerGame; bv = b.redPerGame; break;
+                case 'record': av = a.wins; bv = b.wins; break;
+                case 'gp': av = a.gamesPlayed; bv = b.gamesPlayed; break;
+                default: return 0;
+            }
+            return dir === 'asc' ? av - bv : bv - av;
+        });
+    }
+
+    // Build results
+    RAW_TEAMS.forEach(t => {
+        const r = calculateRED(t.wins, t.losses, t.ptsFor, t.ptsAgainst);
+        allResults.push({ ...t, ...r });
+    });
+    allResults.sort((a, b) => b.redScore - a.redScore);
+    render(allResults);
+
+    // Sort on click
+    document.querySelectorAll('th[data-sort]').forEach(th => {
+        th.addEventListener('click', () => {
+            const col = th.dataset.sort;
+            if (currentSort.column === col) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort = { column: col, direction: col === 'red' || col === 'rpg' || col === 'record' ? 'desc' : 'asc' };
+            }
+            render(sortData(allResults, currentSort.column, currentSort.direction));
+        });
+    });
+
+    // Search
+    document.getElementById('searchBox').addEventListener('input', e => {
+        const q = e.target.value.toLowerCase();
+        render(allResults.filter(t => t.name.toLowerCase().includes(q) || t.coach.toLowerCase().includes(q)));
+    });
+</script>
+</body>
+</html>
