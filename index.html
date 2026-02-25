@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RED System - NBA Coaching Performance Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0e1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #C9A84C;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e0c766;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0e1a;
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #141929 0%, #1a1f2e 100%);
+            border-bottom: 2px solid #C9A84C;
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+        }
+
+        .red-badge {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #C9A84C;
+            background: rgba(201, 168, 76, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 2px solid #C9A84C;
+            letter-spacing: 2px;
+        }
+
+        .header-title-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-title-text h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .header-title-text p {
+            font-size: 0.75rem;
+            color: #999;
+            margin: 0.25rem 0 0 0;
+            letter-spacing: 0.5px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box {
+            background: #0a0e1a;
+            border: 1px solid #C9A84C;
+            padding: 0.7rem 1rem;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            background: #141929;
+            border-color: #e0c766;
+            box-shadow: 0 0 12px rgba(201, 168, 76, 0.2);
+        }
+
+        .search-box::placeholder {
+            color: #666;
+        }
+
+        .help-btn {
+            background: #C9A84C;
+            color: #0a0e1a;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .help-btn:hover {
+            background: #e0c766;
+            transform: scale(1.05);
+        }
+
+        .disclaimer-banner {
+            background: rgba(217, 119, 6, 0.15);
+            border-left: 4px solid #f97316;
+            padding: 1rem 1.5rem;
+            margin: 2rem auto;
+            max-width: 1400px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #ffd07a;
+        }
+
+        .disclaimer-banner strong {
+            color: #ffd99d;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem 2rem;
+        }
+
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            gap: 2rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #333;
+            border-top: 4px solid #C9A84C;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-text {
+            color: #999;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .results-info {
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            background: #141929;
+            border-radius: 8px;
+            border: 1px solid #2a2f3e;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #141929;
+        }
+
+        thead {
+            background: linear-gradient(90deg, #1a1f2e 0%, #202636 100%);
+            border-bottom: 2px solid #C9A84C;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #C9A84C;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        th:hover {
+            background-color: rgba(201, 168, 76, 0.1);
+        }
+
+        .sort-indicator {
+            display: inline-block;
+            margin-left: 0.5rem;
+            font-size: 0.75rem;
+            color: #C9A84C;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #1a1f2e;
+            font-size: 0.9rem;
+        }
+
+        tbody tr {
+            transition: all 0.2s ease;
+            background: #141929;
+        }
+
+        tbody tr:hover {
+            background: #1a202e;
+            box-shadow: inset 0 0 20px rgba(201, 168, 76, 0.05);
+        }
+
+        tbody tr.filtered-out {
+            display: none;
+        }
+
+        .rank-cell {
+            font-weight: 700;
+            width: 50px;
+            text-align: center;
+        }
+
+        .rank-medal {
+            margin-right: 0.5rem;
+        }
+
+        .team-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .team-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .red-score {
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 4px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .red-score.excellent {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .red-score.good {
+            background: rgba(134, 239, 172, 0.2);
+            color: #86efac;
+        }
+
+        .red-score.neutral {
+            background: rgba(148, 163, 184, 0.2);
+            color: #cbd5e1;
+        }
+
+        .red-score.poor {
+            background: rgba(249, 115, 22, 0.2);
+            color: #fb923c;
+        }
+
+        .red-score.bad {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        .record-cell {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .stats-cell {
+            text-align: center;
+            color: #bbb;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: #141929;
+            margin: 5% auto;
+            padding: 2rem;
+            border: 1px solid #C9A84C;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #C9A84C;
+            padding-bottom: 1rem;
+        }
+
+        .modal-header h2 {
+            color: #C9A84C;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .close-btn {
+            color: #C9A84C;
+            font-size: 1.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            color: #e0c766;
+            transform: scale(1.2);
+        }
+
+        .modal-body {
+            color: #e0e0e0;
+            line-height: 1.8;
+        }
+
+        .modal-body h3 {
+            color: #C9A84C;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .modal-body p {
+            margin-bottom: 1rem;
+        }
+
+        .modal-body code {
+            background: #0a0e1a;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            color: #86efac;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .formula-box {
+            background: #0a0e1a;
+            border-left: 4px solid #C9A84C;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #86efac;
+            overflow-x: auto;
+        }
+
+        footer {
+            background: linear-gradient(135deg, #0a0e1a 0%, #141929 100%);
+            border-top: 2px solid #C9A84C;
+            padding: 2rem;
+            text-align: center;
+            color: #999;
+            font-size: 0.85rem;
+            margin-top: 4rem;
+        }
+
+        footer a {
+            color: #C9A84C;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        footer a:hover {
+            color: #e0c766;
+            text-decoration: underline;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+            font-size: 1rem;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.15);
+            border-left: 4px solid #ef4444;
+            padding: 1rem 1.5rem;
+            margin: 2rem auto;
+            max-width: 1400px;
+            border-radius: 4px;
+            color: #fca5a5;
+        }
+
+        @media (max-width: 1024px) {
+            .search-box {
+                width: 180px;
+            }
+
+            th, td {
+                padding: 0.75rem;
+                font-size: 0.8rem;
+            }
+
+            .red-score {
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                gap: 1rem;
+            }
+
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .search-box {
+                width: 100%;
+                max-width: none;
+            }
+
+            .disclaimer-banner {
+                margin: 1rem auto;
+                padding: 0.8rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .container {
+                padding: 0 1rem 2rem 1rem;
+            }
+
+            th, td {
+                padding: 0.6rem;
+                font-size: 0.75rem;
+            }
+
+            table {
+                font-size: 0.75rem;
+            }
+
+            .team-circle {
+                width: 32px;
+                height: 32px;
+                font-size: 0.7rem;
+            }
+
+            .red-score {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20% auto;
+                padding: 1.5rem;
+            }
+
+            .team-badge {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.3rem;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .red-badge {
+                font-size: 1.5rem;
+                padding: 0.3rem 0.6rem;
+            }
+
+            .header-title-text h1 {
+                font-size: 0.95rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+                font-size: 0.7rem;
+            }
+
+            .team-circle {
+                width: 28px;
+                height: 28px;
+                font-size: 0.6rem;
+            }
+
+            .red-score {
+                font-size: 0.8rem;
+                min-width: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="header-title">
+                <div class="red-badge">RED</div>
+                <div class="header-title-text">
+                    <h1>Rating of Elite Dominance</h1>
+                    <p>NBA Coaching Performance Analysis</p>
+                </div>
+            </div>
+            <div class="header-controls">
+                <input type="text" class="search-box" id="searchBox" placeholder="Search team or coach...">
+                <button class="help-btn" id="helpBtn" title="How RED is calculated">?</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="disclaimer-banner">
+        <strong>Disclaimer:</strong> RED is a descriptive metric measuring coaching performance against preseason expectations. It is not predictive of future results. Data refreshes on each page load from live ESPN API.
+    </div>
+
+    <div class="container">
+        <div id="loadingContainer" class="loading-container">
+            <div class="spinner"></div>
+            <p class="progress-text">Initializing RED System...</p>
+            <p class="progress-text" id="progressText">Loading 0/30 teams...</p>
+        </div>
+
+        <div id="resultsContainer" style="display: none;">
+            <div class="results-header">
+                <div class="results-info">
+                    <strong id="teamCount">0</strong> teams analyzed · <span id="dataTimestamp"></span>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table id="leaderboardTable">
+                    <thead>
+                        <tr>
+                            <th class="sortable" data-sort="rank">Rank</th>
+                            <th class="sortable" data-sort="team">Team</th>
+                            <th class="sortable" data-sort="coach">Coach</th>
+                            <th class="sortable" data-sort="red">RED Score</th>
+                            <th class="sortable" data-sort="red-per-game">RED/G</th>
+                            <th class="sortable" data-sort="record">Record</th>
+                            <th class="sortable" data-sort="expected">xW</th>
+                            <th class="sortable" data-sort="baseline">Baseline</th>
+                            <th class="sortable" data-sort="games">GP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                    </tbody>
+                </table>
+            </div>
+            <div id="noDataMessage" class="no-data" style="display: none;">
+                No teams match your search criteria.
+            </div>
+        </div>
+    </div>
+
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>How RED Works</h2>
+                <button class="close-btn" id="closeModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <strong>RED (Rating of Elite Dominance)</strong> measures how much each NBA coach is outperforming or underperforming what their team was expected to do.
+                </p>
+
+                <h3>The Concept</h3>
+                <p>
+                    A coach with <code>RED = +3.0</code> has generated <strong>3 more wins than expected</strong> given their roster quality and preseason expectations. Negative RED indicates underperformance relative to expectations.
+                </p>
+
+                <h3>Data Inputs</h3>
+                <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                    <li><strong>Vegas Win Totals:</strong> Preseason consensus over/under projections</li>
+                    <li><strong>Player Quality (BPM):</strong> Basketball Plus-Minus estimates team strength</li>
+                    <li><strong>Game Results:</strong> Live data from ESPN API (2025-26 season)</li>
+                </ul>
+
+                <h3>Calculation Layers</h3>
+
+                <strong>Layer 1 - Baseline Wins:</strong>
+                <div class="formula-box">
+Baseline = (0.7 × Vegas Total) + (0.3 × BPM-Derived Wins)
+BPM Wins = 41 + (Team BPM × 5)
+                </div>
+
+                <strong>Layer 2 - Game Expected Win Probability:</strong>
+                <div class="formula-box">
+Strength Diff = Team BPM - Opponent BPM
+if Home: Strength Diff += 0.5
+P(Win) = 1 / (1 + e^(-0.35 × Strength Diff))
+                </div>
+
+                <strong>Layer 3 - RED Score:</strong>
+                <div class="formula-box">
+Game Delta = Actual Result (1 or 0) - P(Win)
+if Margin ≤ 6 pts: Game Delta *= 1.10 (close game bonus)
+RED = Σ Game Deltas (all games)
+                </div>
+
+                <h3>Interpretation</h3>
+                <p>
+                    <strong>Positive RED:</strong> Coach exceeded expectations. Team is winning more games than talent level predicted.
+                </p>
+                <p>
+                    <strong>Negative RED:</strong> Coach underperformed expectations. Team is winning fewer games than roster quality suggested.
+                </p>
+
+                <h3>Important Notes</h3>
+                <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                    <li>RED is <strong>descriptive</strong>, not predictive of future performance</li>
+                    <li>Accounts for home court advantage and roster quality differential</li>
+                    <li>Close games (≤6 points) weighted higher to reward clutch coaching</li>
+                    <li>Only includes completed games from the 2025-26 season</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>
+            <strong>Data Sources:</strong> ESPN API (live game data) · Vegas lines: 2025-26 preseason consensus · BPM: Basketball Reference estimates
+        </p>
+        <p style="margin-top: 0.5rem;">
+            RED is a descriptive analytical metric. Not recommended for gambling or financial decisions.
+        </p>
+    </footer>
+
+    <script>
+        // Static Data
+        const VEGAS_TOTALS = {
+            "Boston Celtics": 53.5,
+            "Oklahoma City Thunder": 54.5,
+            "Denver Nuggets": 50.5,
+            "New York Knicks": 49.5,
+            "Dallas Mavericks": 49.5,
+            "Minnesota Timberwolves": 48.5,
+            "Cleveland Cavaliers": 48.5,
+            "Golden State Warriors": 47.5,
+            "Los Angeles Lakers": 47.5,
+            "Milwaukee Bucks": 47.5,
+            "Philadelphia 76ers": 46.5,
+            "Houston Rockets": 45.5,
+            "Los Angeles Clippers": 44.5,
+            "Phoenix Suns": 44.5,
+            "Miami Heat": 44.5,
+            "Orlando Magic": 43.5,
+            "Sacramento Kings": 43.5,
+            "Memphis Grizzlies": 43.5,
+            "Indiana Pacers": 42.5,
+            "New Orleans Pelicans": 41.5,
+            "Atlanta Hawks": 37.5,
+            "Chicago Bulls": 36.5,
+            "Detroit Pistons": 34.5,
+            "San Antonio Spurs": 33.5,
+            "Toronto Raptors": 33.5,
+            "Charlotte Hornets": 29.5,
+            "Portland Trail Blazers": 28.5,
+            "Utah Jazz": 28.5,
+            "Washington Wizards": 24.5,
+            "Brooklyn Nets": 25.5
+        };
+
+        const TEAM_BPM = {
+            "Oklahoma City Thunder": 2.8,
+            "Boston Celtics": 2.4,
+            "Cleveland Cavaliers": 1.9,
+            "Denver Nuggets": 1.7,
+            "New York Knicks": 1.3,
+            "Minnesota Timberwolves": 1.2,
+            "Dallas Mavericks": 1.1,
+            "Houston Rockets": 0.9,
+            "Orlando Magic": 0.6,
+            "Miami Heat": 0.5,
+            "Los Angeles Lakers": 0.4,
+            "Indiana Pacers": 0.3,
+            "Golden State Warriors": 0.2,
+            "Milwaukee Bucks": 0.1,
+            "Memphis Grizzlies": 0.0,
+            "Sacramento Kings": -0.1,
+            "Philadelphia 76ers": -0.2,
+            "Los Angeles Clippers": -0.3,
+            "New Orleans Pelicans": -0.4,
+            "Phoenix Suns": -0.5,
+            "Atlanta Hawks": -0.8,
+            "Toronto Raptors": -1.0,
+            "Chicago Bulls": -1.1,
+            "Brooklyn Nets": -1.4,
+            "Charlotte Hornets": -1.6,
+            "San Antonio Spurs": -1.7,
+            "Portland Trail Blazers": -2.0,
+            "Detroit Pistons": -2.1,
+            "Utah Jazz": -2.4,
+            "Washington Wizards": -2.9
+        };
+
+        const ESPN_TEAMS = [
+            { id: "1",  name: "Atlanta Hawks",          abbr: "ATL", coach: "Quin Snyder", color: "#E03C21" },
+            { id: "2",  name: "Boston Celtics",         abbr: "BOS", coach: "Joe Mazzulla", color: "#007A33" },
+            { id: "17", name: "Brooklyn Nets",          abbr: "BKN", coach: "Jordi Fernandez", color: "#000000" },
+            { id: "30", name: "Charlotte Hornets",      abbr: "CHA", coach: "Charles Lee", color: "#00778D" },
+            { id: "4",  name: "Chicago Bulls",          abbr: "CHI", coach: "Billy Donovan", color: "#CE1141" },
+            { id: "5",  name: "Cleveland Cavaliers",    abbr: "CLE", coach: "Kenny Atkinson", color: "#6F2DA8" },
+            { id: "6",  name: "Dallas Mavericks",       abbr: "DAL", coach: "Jason Kidd", color: "#002B81" },
+            { id: "7",  name: "Denver Nuggets",         abbr: "DEN", coach: "Michael Malone", color: "#0E2240" },
+            { id: "8",  name: "Detroit Pistons",        abbr: "DET", coach: "J.B. Bickerstaff", color: "#C8102E" },
+            { id: "9",  name: "Golden State Warriors",  abbr: "GSW", coach: "Steve Kerr", color: "#1D428A" },
+            { id: "10", name: "Houston Rockets",        abbr: "HOU", coach: "Ime Udoka", color: "#CE1141" },
+            { id: "11", name: "Indiana Pacers",         abbr: "IND", coach: "Rick Carlisle", color: "#002D58" },
+            { id: "12", name: "Los Angeles Clippers",   abbr: "LAC", coach: "Tyronn Lue", color: "#C60C30" },
+            { id: "13", name: "Los Angeles Lakers",     abbr: "LAL", coach: "JJ Redick", color: "#552583" },
+            { id: "29", name: "Memphis Grizzlies",      abbr: "MEM", coach: "Taylor Jenkins", color: "#12173F" },
+            { id: "14", name: "Miami Heat",             abbr: "MIA", coach: "Erik Spoelstra", color: "#98002E" },
+            { id: "15", name: "Milwaukee Bucks",        abbr: "MIL", coach: "Doc Rivers", color: "#12173F" },
+            { id: "16", name: "Minnesota Timberwolves", abbr: "MIN", coach: "Chris Finch", color: "#0C2B4C" },
+            { id: "3",  name: "New Orleans Pelicans",   abbr: "NOP", coach: "Willie Green", color: "#0C2340" },
+            { id: "18", name: "New York Knicks",        abbr: "NYK", coach: "Tom Thibodeau", color: "#F58426" },
+            { id: "25", name: "Oklahoma City Thunder",  abbr: "OKC", coach: "Mark Daigneault", color: "#007AC1" },
+            { id: "19", name: "Orlando Magic",          abbr: "ORL", coach: "Jamahl Mosley", color: "#0077B6" },
+            { id: "20", name: "Philadelphia 76ers",     abbr: "PHI", coach: "Nick Nurse", color: "#1D1160" },
+            { id: "21", name: "Phoenix Suns",           abbr: "PHX", coach: "Mike Budenholzer", color: "#1D1160" },
+            { id: "22", name: "Portland Trail Blazers", abbr: "POR", coach: "Chauncey Billups", color: "#E03C21" },
+            { id: "23", name: "Sacramento Kings",       abbr: "SAC", coach: "Doug Christie", color: "#5A2D81" },
+            { id: "24", name: "San Antonio Spurs",      abbr: "SAS", coach: "Gregg Popovich", color: "#C4CED4" },
+            { id: "28", name: "Toronto Raptors",        abbr: "TOR", coach: "Darko Rajakovic", color: "#CE1141" },
+            { id: "26", name: "Utah Jazz",              abbr: "UTA", coach: "Will Hardy", color: "#002B5C" },
+            { id: "27", name: "Washington Wizards",     abbr: "WAS", coach: "Brian Keefe", color: "#002B5C" }
+        ];
+
+        // DOM Elements
+        const loadingContainer = document.getElementById('loadingContainer');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const leaderboardBody = document.getElementById('leaderboardBody');
+        const searchBox = document.getElementById('searchBox');
+        const helpBtn = document.getElementById('helpBtn');
+        const helpModal = document.getElementById('helpModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const progressText = document.getElementById('progressText');
+        const noDataMessage = document.getElementById('noDataMessage');
+        const dataTimestamp = document.getElementById('dataTimestamp');
+        const teamCount = document.getElementById('teamCount');
+
+        let allResults = [];
+        let currentSort = { column: 'red', direction: 'desc' };
+
+        // Helper Functions
+        function formatDate(date) {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            return `${now.getFullYear()}-${month}-${day} ${hours}:${minutes} UTC`;
+        }
+
+        async function fetchTeamSchedule(espnId) {
+            try {
+                const response = await fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/${espnId}/schedule?season=2026`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                
+                const events = data.events || [];
+                const games = [];
+
+                for (const event of events) {
+                    const competitions = event.competitions || [];
+                    for (const competition of competitions) {
+                        const status = competition.status?.type?.name || '';
+                        if (status !== 'STATUS_FINAL') continue;
+
+                        const competitors = competition.competitors || [];
+                        if (competitors.length < 2) continue;
+
+                        const homeTeam = competitors[0];
+                        const awayTeam = competitors[1];
+
+                        const homeScore = parseInt(homeTeam.score) || 0;
+                        const awayScore = parseInt(awayTeam.score) || 0;
+                        const homeTeamName = homeTeam.team?.displayName || '';
+                        const awayTeamName = awayTeam.team?.displayName || '';
+
+                        games.push({
+                            date: event.date || '',
+                            homeTeamName,
+                            awayTeamName,
+                            homeScore,
+                            awayScore,
+                            isCompleted: true
+                        });
+                    }
+                }
+
+                return games;
+            } catch (error) {
+                console.warn(`Failed to fetch schedule for ESPN ID ${espnId}:`, error.message);
+                return [];
+            }
+        }
+
+        function calculateRED(teamName, games) {
+            const teamBpm = TEAM_BPM[teamName] || 0;
+            const vegasTotal = VEGAS_TOTALS[teamName] || 41;
+            
+            // Layer 1: Baseline
+            const bpmWins = 41 + (teamBpm * 5);
+            const baseline = (0.7 * vegasTotal) + (0.3 * bpmWins);
+
+            let actualWins = 0;
+            let redScore = 0;
+
+            for (const game of games) {
+                const isHomeGame = game.homeTeamName === teamName;
+                const isAwayGame = game.awayTeamName === teamName;
+
+                if (!isHomeGame && !isAwayGame) continue;
+
+                const opponentName = isHomeGame ? game.awayTeamName : game.homeTeamName;
+                const opponentBpm = TEAM_BPM[opponentName] || 0;
+                const teamScore = isHomeGame ? game.homeScore : game.awayScore;
+                const opponentScore = isHomeGame ? game.awayScore : game.homeScore;
+
+                // Layer 2: Expected Win Probability
+                let strengthDiff = teamBpm - opponentBpm;
+                if (isHomeGame) {
+                    strengthDiff += 0.5;
+                }
+
+                const pWin = 1 / (1 + Math.exp(-0.35 * strengthDiff));
+
+                // Layer 3: Game Delta
+                const actualResult = teamScore > opponentScore ? 1 : 0;
+                const margin = Math.abs(teamScore - opponentScore);
+                let gameDelta = actualResult - pWin;
+
+                if (margin <= 6) {
+                    gameDelta *= 1.10;
+                }
+
+                redScore += gameDelta;
+                actualWins += actualResult;
+            }
+
+            const gamesPlayed = games.length;
+            const expectedWins = gamesPlayed > 0 ? games.reduce((sum, game) => {
+                const isHomeGame = game.homeTeamName === teamName;
+                const isAwayGame = game.awayTeamName === teamName;
+                if (!isHomeGame && !isAwayGame) return sum;
+
+                const opponentName = isHomeGame ? game.awayTeamName : game.homeTeamName;
+                const opponentBpm = TEAM_BPM[opponentName] || 0;
+                let strengthDiff = teamBpm - opponentBpm;
+                if (isHomeGame) strengthDiff += 0.5;
+                const pWin = 1 / (1 + Math.exp(-0.35 * strengthDiff));
+                return sum + pWin;
+            }, 0) : 0;
+
+            const redPerGame = gamesPlayed > 0 ? redScore / gamesPlayed : 0;
+            const winPct = gamesPlayed > 0 ? (actualWins / gamesPlayed * 100) : 0;
+
+            return {
+                redScore,
+                gamesPlayed,
+                actualWins,
+                expectedWins: parseFloat(expectedWins.toFixed(1)),
+                baselineWins: parseFloat(baseline.toFixed(1)),
+                redPerGame,
+                winPct
+            };
+        }
+
+        async function initializeSystem() {
+            allResults = [];
+            let completedTeams = 0;
+
+            // Fetch in batches of 5 to avoid rate limiting
+            for (let i = 0; i < ESPN_TEAMS.length; i += 5) {
+                const batch = ESPN_TEAMS.slice(i, i + 5);
+                const promises = batch.map(team => 
+                    fetchTeamSchedule(team.id).then(games => ({
+                        team,
+                        games
+                    }))
+                );
+
+                const results = await Promise.all(promises);
+
+                for (const result of results) {
+                    const { team, games } = result;
+                    completedTeams++;
+                    progressText.textContent = `Loading ${completedTeams}/30 teams...`;
+
+                    if (games.length === 0) continue;
+
+                    const redData = calculateRED(team.name, games);
+                    
+                    allResults.push({
+                        ...team,
+                        ...redData
+                    });
+                }
+            }
+
+            // Sort by RED score descending
+            allResults.sort((a, b) => b.redScore - a.redScore);
+
+            // Show results
+            loadingContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            dataTimestamp.textContent = `Data updated: ${formatDate(new Date())}`;
+            teamCount.textContent = allResults.length;
+
+            renderLeaderboard(allResults);
+        }
+
+        function getRedScoreClass(score) {
+            if (score > 2.0) return 'excellent';
+            if (score > 0.5) return 'good';
+            if (score > -0.5) return 'neutral';
+            if (score > -2.0) return 'poor';
+            return 'bad';
+        }
+
+        function getRankMedal(rank) {
+            if (rank === 1) return '🥇';
+            if (rank === 2) return '🥈';
+            if (rank === 3) return '🥉';
+            return '';
+        }
+
+        function renderLeaderboard(data) {
+            leaderboardBody.innerHTML = '';
+            
+            if (data.length === 0) {
+                noDataMessage.style.display = 'block';
+                return;
+            } else {
+                noDataMessage.style.display = 'none';
+            }
+
+            data.forEach((result, index) => {
+                const rank = index + 1;
+                const row = document.createElement('tr');
+
+                const redScoreClass = getRedScoreClass(result.redScore);
+                const medal = getRankMedal(rank);
+                const record = `${result.actualWins}-${result.gamesPlayed - result.actualWins}`;
+                const redPerGameStr = result.redPerGame.toFixed(3);
+                const expectedWinsStr = result.expectedWins.toFixed(1);
+                const baselineStr = result.baselineWins.toFixed(1);
+                const redScoreStr = result.redScore.toFixed(2);
+
+                row.innerHTML = `
+                    <td class="rank-cell">
+                        <span class="rank-medal">${medal}</span>${rank}
+                    </td>
+                    <td>
+                        <div class="team-badge">
+                            <div class="team-circle" style="background-color: ${result.color};">
+                                ${result.abbr}
+                            </div>
+                            <span>${result.name}</span>
+                        </div>
+                    </td>
+                    <td>${result.coach}</td>
+                    <td>
+                        <div class="red-score ${redScoreClass}">
+                            ${redScoreStr > 0 ? '+' : ''}${redScoreStr}
+                        </div>
+                    </td>
+                    <td class="stats-cell">${redPerGameStr > 0 ? '+' : ''}${redPerGameStr}</td>
+                    <td class="record-cell">${record}</td>
+                    <td class="stats-cell">${expectedWinsStr}</td>
+                    <td class="stats-cell">${baselineStr}</td>
+                    <td class="stats-cell">${result.gamesPlayed}</td>
+                `;
+
+                leaderboardBody.appendChild(row);
+            });
+
+            attachSortListeners();
+        }
+
+        function attachSortListeners() {
+            document.querySelectorAll('th.sortable').forEach(th => {
+                th.addEventListener('click', () => {
+                    const column = th.dataset.sort;
+                    
+                    if (currentSort.column === column) {
+                        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        currentSort.column = column;
+                        currentSort.direction = 'desc';
+                    }
+
+                    sortAndRender();
+                    updateSortIndicators();
+                });
+            });
+
+            updateSortIndicators();
+        }
+
+        function updateSortIndicators() {
+            document.querySelectorAll('th.sortable .sort-indicator').forEach(el => el.remove());
+
+            const sortHeader = document.querySelector(`th[data-sort="${currentSort.column}"]`);
+            if (sortHeader) {
+                const indicator = document.createElement('span');
+                indicator.className = 'sort-indicator';
+                indicator.textContent = currentSort.direction === 'asc' ? '↑' : '↓';
+                sortHeader.appendChild(indicator);
+            }
+        }
+
+        function sortAndRender() {
+            const sorted = [...allResults].sort((a, b) => {
+                let aVal, bVal;
+
+                switch (currentSort.column) {
+                    case 'rank':
+                        aVal = allResults.indexOf(a);
+                        bVal = allResults.indexOf(b);
+                        break;
+                    case 'team':
+                        aVal = a.name.toLowerCase();
+                        bVal = b.name.toLowerCase();
+                        break;
+                    case 'coach':
+                        aVal = a.coach.toLowerCase();
+                        bVal = b.coach.toLowerCase();
+                        break;
+                    case 'red':
+                        aVal = a.redScore;
+                        bVal = b.redScore;
+                        break;
+                    case 'red-per-game':
+                        aVal = a.redPerGame;
+                        bVal = b.redPerGame;
+                        break;
+                    case 'record':
+                        aVal = a.actualWins;
+                        bVal = b.actualWins;
+                        break;
+                    case 'expected':
+                        aVal = a.expectedWins;
+                        bVal = b.expectedWins;
+                        break;
+                    case 'baseline':
+                        aVal = a.baselineWins;
+                        bVal = b.baselineWins;
+                        break;
+                    case 'games':
+                        aVal = a.gamesPlayed;
+                        bVal = b.gamesPlayed;
+                        break;
+                    default:
+                        return 0;
+                }
+
+                if (typeof aVal === 'string') {
+                    return currentSort.direction === 'asc' ? 
+                        aVal.localeCompare(bVal) : 
+                        bVal.localeCompare(aVal);
+                }
+
+                return currentSort.direction === 'asc' ? aVal - bVal : bVal - aVal;
+            });
+
+            renderLeaderboard(sorted);
+        }
+
+        function filterBySearch(query) {
+            const lowerQuery = query.toLowerCase();
+            const filtered = allResults.filter(result => 
+                result.name.toLowerCase().includes(lowerQuery) ||
+                result.coach.toLowerCase().includes(lowerQuery) ||
+                result.abbr.toLowerCase().includes(lowerQuery)
+            );
+
+            renderLeaderboard(filtered);
+        }
+
+        // Event Listeners
+        searchBox.addEventListener('input', (e) => {
+            filterBySearch(e.target.value);
+        });
+
+        helpBtn.addEventListener('click', () => {
+            helpModal.style.display = 'block';
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            helpModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === helpModal) {
+                helpModal.style.display = 'none';
+            }
+        });
+
+        // Initialize on load
+        initializeSystem();
+    </script>
+</body>
+</html>
