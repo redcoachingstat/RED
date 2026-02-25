@@ -621,6 +621,19 @@
         </div>
     </header>
 
+    <!-- ── Historical Seasons Navigation ── -->
+    <nav style="background:#0f1420;border-bottom:1px solid #2a3040;padding:0 2rem;">
+        <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:0;overflow-x:auto;">
+            <span style="font-size:0.72rem;color:#666;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;margin-right:16px;padding:12px 0;">Past Seasons</span>
+            <a href="https://redcoachingstat.github.io/RED/1986/" style="display:inline-block;padding:10px 18px;font-size:0.82rem;font-weight:600;color:#888;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.color='#C9A84C';this.style.borderBottomColor='#C9A84C'" onmouseout="this.style.color='#888';this.style.borderBottomColor='transparent'">1985–86</a>
+            <a href="https://redcoachingstat.github.io/RED/1996/" style="display:inline-block;padding:10px 18px;font-size:0.82rem;font-weight:600;color:#888;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.color='#C9A84C';this.style.borderBottomColor='#C9A84C'" onmouseout="this.style.color='#888';this.style.borderBottomColor='transparent'">1995–96</a>
+            <a href="https://redcoachingstat.github.io/RED/2006/" style="display:inline-block;padding:10px 18px;font-size:0.82rem;font-weight:600;color:#888;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.color='#C9A84C';this.style.borderBottomColor='#C9A84C'" onmouseout="this.style.color='#888';this.style.borderBottomColor='transparent'">2005–06</a>
+            <a href="https://redcoachingstat.github.io/RED/2016/" style="display:inline-block;padding:10px 18px;font-size:0.82rem;font-weight:600;color:#888;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.color='#C9A84C';this.style.borderBottomColor='#C9A84C'" onmouseout="this.style.color='#888';this.style.borderBottomColor='transparent'">2015–16</a>
+            <span style="flex:1"></span>
+            <span style="font-size:0.72rem;color:#C9A84C;font-weight:600;white-space:nowrap;padding:12px 0;">● 2025–26 Live</span>
+        </div>
+    </nav>
+
     <div class="disclaimer-banner">
         <strong>RED — Mid-Season Edition:</strong> 70% overall performance (wins above .500 pace) + 30% coaching efficiency (Pythagorean). Good teams rank high. Descriptive only — not predictive.
     </div>
@@ -651,7 +664,6 @@
                             <th class="sortable" data-sort="coach">Coach</th>
                             <th class="sortable" data-sort="red">RED Score</th>
                             <th class="sortable" data-sort="red-per-game">RED/G</th>
-                            <th class="sortable" data-sort="vs-exp" title="Wins above preseason projection (pro-rated)">vs Exp ⓘ</th>
                             <th class="sortable" data-sort="record">Record</th>
                             <th class="sortable" data-sort="games">GP</th>
                         </tr>
@@ -776,39 +788,6 @@ RED = (0.70 × Quality) + (0.30 × Efficiency)
         // Beating this = coach is outperforming their talent level.
         // Note: Boston's 54W projection assumes a healthy Jayson Tatum. His Achilles injury
         // means Mazzulla's 37-19 is a dramatic overperformance of adjusted expectations.
-        const PRESEASON_EXPECTED_WINS = {
-            "Boston Celtics":           54,  // ⚠ Tatum torn achilles — projection does NOT reflect injury
-            "Oklahoma City Thunder":    52,
-            "Cleveland Cavaliers":      50,
-            "Denver Nuggets":           48,
-            "New York Knicks":          46,
-            "Dallas Mavericks":         44,
-            "Indiana Pacers":           44,
-            "Milwaukee Bucks":          42,
-            "Los Angeles Lakers":       42,
-            "Minnesota Timberwolves":   40,
-            "Houston Rockets":          40,
-            "Phoenix Suns":             40,
-            "Los Angeles Clippers":     40,
-            "Orlando Magic":            40,
-            "Golden State Warriors":    38,
-            "Philadelphia 76ers":       36,
-            "Memphis Grizzlies":        36,
-            "Miami Heat":               34,
-            "Sacramento Kings":         32,
-            "Toronto Raptors":          28,
-            "New Orleans Pelicans":     28,
-            "Atlanta Hawks":            28,
-            "Chicago Bulls":            28,
-            "Detroit Pistons":          26,
-            "Charlotte Hornets":        24,
-            "San Antonio Spurs":        22,
-            "Brooklyn Nets":            22,
-            "Portland Trail Blazers":   22,
-            "Utah Jazz":                20,
-            "Washington Wizards":       18,
-        };
-
         // DOM Elements
         const loadingContainer = document.getElementById('loadingContainer');
         const resultsContainer = document.getElementById('resultsContainer');
@@ -945,31 +924,29 @@ RED = (0.70 × Quality) + (0.30 × Efficiency)
         // wins vs their talent level — e.g. Celtics overperforming without Tatum.
         //
         // Scale: roughly -15 (worst) to +15 (best) over a full season.
-        // ── RED Formula (Roster-Quality-Adjusted Hybrid) ─────────────────────
-        // RED = 0.70 × WinsAboveExpected + 0.30 × PythagoreanDelta
+        // ── RED Formula ───────────────────────────────────────────────────────
+        // RED = 0.70 × WinsAbove.500 + 0.30 × PythagoreanDelta
         //
-        // WinsAboveExpected: actual wins minus pro-rated preseason projection.
-        //   A team projected for 52 wins that's on pace for 60 gets credit for +8.
-        //   A team projected for 52 wins that's on pace for 38 (e.g. Celtics w/o Tatum) gets -14.
-        //   → This is the "roster quality" component. Coaches beating their talent ceiling rank high.
+        // WinsAbove.500: actual wins minus the league-neutral .500 pace.
+        //   Every win above average reflects coaching output. A neutral baseline
+        //   avoids penalising top teams for being expected to be good.
         //
         // PythagoreanDelta: actual wins minus wins predicted from point differential.
-        //   Isolates coaching decisions (rotations, clutch management) from roster talent.
+        //   Measures coaching decisions — rotations, late-game management, clutch subs.
+        //   A positive delta means winning close games more than the margin predicts.
         //
-        // Pro-rating: preseason projection is scaled to games played (not full 82-game season).
-        function calculateRED(wins, losses, ptsFor, ptsAgainst, preseasonExpected = 41) {
+        // Scale: roughly –15 (worst) to +15 (best) over a full season.
+        function calculateRED(wins, losses, ptsFor, ptsAgainst) {
             const gamesPlayed = wins + losses;
             if (gamesPlayed === 0 || ptsFor === 0 || ptsAgainst === 0) {
-                return { redScore: 0, gamesPlayed: 0, actualWins: wins, actualLosses: losses,
-                         expectedWins: 0, redPerGame: 0, winsAboveExpected: 0, pythDelta: 0,
-                         proRatedExpected: 0 };
+                return { redScore: 0, gamesPlayed: 0, actualWins: wins,
+                         actualLosses: losses, expectedWins: 0, redPerGame: 0 };
             }
 
-            // (A) Roster-quality-adjusted wins above expectation
-            const proRatedExpected  = preseasonExpected * (gamesPlayed / 82);
-            const winsAboveExpected = wins - proRatedExpected;
+            // (A) Wins above .500 pace
+            const winsAboveAvg = wins - (gamesPlayed * 0.5);
 
-            // (B) Pythagorean efficiency: wins above what scoring margin predicts
+            // (B) Pythagorean efficiency
             const EXP          = 13.91;
             const pfPow        = Math.pow(ptsFor,     EXP);
             const paPow        = Math.pow(ptsAgainst, EXP);
@@ -977,19 +954,16 @@ RED = (0.70 × Quality) + (0.30 × Efficiency)
             const expectedWins = pythWinPct * gamesPlayed;
             const pythDelta    = wins - expectedWins;
 
-            // Blend: 70% beats-your-roster-talent, 30% game-management efficiency
-            const redScore   = (0.70 * winsAboveExpected) + (0.30 * pythDelta);
+            // Blend: quality dominates, efficiency adds nuance
+            const redScore   = (0.70 * winsAboveAvg) + (0.30 * pythDelta);
             const redPerGame = redScore / gamesPlayed;
 
             return {
                 redScore,
                 gamesPlayed,
-                actualWins:        wins,
-                actualLosses:      losses,
-                expectedWins:      parseFloat(expectedWins.toFixed(1)),
-                winsAboveExpected: parseFloat(winsAboveExpected.toFixed(1)),
-                pythDelta:         parseFloat(pythDelta.toFixed(1)),
-                proRatedExpected:  parseFloat(proRatedExpected.toFixed(1)),
+                actualWins:   wins,
+                actualLosses: losses,
+                expectedWins: parseFloat(expectedWins.toFixed(1)),
                 redPerGame
             };
         }
@@ -1006,9 +980,8 @@ RED = (0.70 × Quality) + (0.30 × Efficiency)
                 if (!rec) continue;
                 if ((rec.wins + rec.losses) === 0) continue;
 
-                const preseasonExpected = PRESEASON_EXPECTED_WINS[team.name] || 41;
                 const redData = calculateRED(
-                    rec.wins, rec.losses, rec.ptsFor, rec.ptsAgainst, preseasonExpected
+                    rec.wins, rec.losses, rec.ptsFor, rec.ptsAgainst
                 );
                 allResults.push({ ...team, ...redData });
             }
@@ -1062,13 +1035,8 @@ RED = (0.70 × Quality) + (0.30 × Efficiency)
                 const redScoreClass = getRedScoreClass(result.redScore);
                 const medal = getRankMedal(rank);
                 const record = `${result.actualWins}-${result.actualLosses}`;
-                const redPerGameStr   = (result.redPerGame        >= 0 ? '+' : '') + result.redPerGame.toFixed(3);
-                const redScoreStr     = (result.redScore          >= 0 ? '+' : '') + result.redScore.toFixed(2);
-                const vsExpStr        = (result.winsAboveExpected >= 0 ? '+' : '') + result.winsAboveExpected.toFixed(1);
-                const vsExpColor      = result.winsAboveExpected >= 2 ? '#22c55e'
-                                      : result.winsAboveExpected >= 0 ? '#C9A84C'
-                                      : result.winsAboveExpected >= -3 ? '#f97316'
-                                      : '#ef4444';
+                const redPerGameStr = (result.redPerGame >= 0 ? '+' : '') + result.redPerGame.toFixed(3);
+                const redScoreStr   = (result.redScore   >= 0 ? '+' : '') + result.redScore.toFixed(2);
 
                 row.innerHTML = `
                     <td class="rank-cell">
@@ -1089,8 +1057,6 @@ RED = (0.70 × Quality) + (0.30 × Efficiency)
                         </div>
                     </td>
                     <td class="stats-cell">${redPerGameStr}</td>
-                    <td class="stats-cell" style="color:${vsExpColor};font-weight:600;"
-                        title="Pro-rated projection: ${result.proRatedExpected} wins · Actual: ${result.actualWins}">${vsExpStr}W</td>
                     <td class="record-cell">${record}</td>
                     <td class="stats-cell">${result.gamesPlayed}</td>
                 `;
@@ -1157,10 +1123,6 @@ RED = (0.70 × Quality) + (0.30 × Efficiency)
                     case 'red-per-game':
                         aVal = a.redPerGame;
                         bVal = b.redPerGame;
-                        break;
-                    case 'vs-exp':
-                        aVal = a.winsAboveExpected;
-                        bVal = b.winsAboveExpected;
                         break;
                     case 'record':
                         aVal = a.actualWins;
