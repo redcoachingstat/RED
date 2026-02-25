@@ -622,7 +622,7 @@
     </header>
 
     <div class="disclaimer-banner">
-        <strong>RED — Mid-Season Edition:</strong> Compares actual wins to Pythagorean expected wins based on current points scored/allowed. Positive = winning more than scoring margin predicts. Descriptive only — not predictive.
+        <strong>RED — Mid-Season Edition:</strong> 70% overall performance (wins above .500 pace) + 30% coaching efficiency (Pythagorean). Good teams rank high. Descriptive only — not predictive.
     </div>
 
     <div class="container">
@@ -681,27 +681,32 @@
                 </p>
 
                 <h3>The Formula</h3>
-                <strong>Pythagorean Win Expectation (NBA standard, exp = 13.91):</strong>
+                <strong>Two components, blended 70/30:</strong>
                 <div class="formula-box">
-Expected Win% = PtsFor¹³·⁹¹ ÷ (PtsFor¹³·⁹¹ + PtsAgainst¹³·⁹¹)
-Expected Wins = Expected Win% × Games Played
-RED = Actual Wins − Expected Wins
+(A) Quality Score = Actual Wins − (Games Played × 0.5)
+    → How many wins above league-average pace?
+
+(B) Efficiency Score = Actual Wins − Pythagorean Expected Wins
+    Pythagorean Win% = PtsFor¹³·⁹¹ ÷ (PtsFor¹³·⁹¹ + PtsAgainst¹³·⁹¹)
+    → Winning more games than scoring margin predicts?
+
+RED = (0.70 × Quality) + (0.30 × Efficiency)
                 </div>
 
                 <h3>Interpretation</h3>
                 <p>
-                    <strong>Positive RED:</strong> The coach is winning more games than the scoring margin says they should. Strong game management, clutch performance, or tactical edge.
+                    <strong>Positive RED:</strong> Team is winning above league-average pace and/or converting their scoring margin into wins efficiently. Elite teams with great coaches score highest.
                 </p>
                 <p>
-                    <strong>Negative RED:</strong> The team is underperforming its point differential. Losing close games, inconsistency, or poor situational decisions.
+                    <strong>Negative RED:</strong> Team is below .500 pace and/or underperforming their point differential. Poor results regardless of circumstances.
                 </p>
                 <p>
-                    <strong>Near zero:</strong> The team is winning exactly as many games as their talent and performance suggest. Expected outcome.
+                    <strong>The coaching signal:</strong> The Pythagorean component (30%) rewards coaches squeezing extra wins beyond what their team's raw scoring says they deserve — like Boston overperforming without Jayson Tatum, or a defense-first team winning tight games.
                 </p>
 
-                <h3>Why Pythagorean?</h3>
+                <h3>Why this blend?</h3>
                 <p>
-                    Developed by Bill James for baseball and adapted for basketball, Pythagorean expectation is one of the most validated formulas in sports analytics. Point differential is a better predictor of future performance than actual wins — making the gap between wins and expected wins a reliable signal of coaching impact.
+                    Pure Pythagorean has a flaw: a team getting blown out every night but squeaking out a few surprise wins scores <em>positive</em> RED, because their terrible differential predicts almost zero wins. The 70% quality weight anchors scores to real performance — good teams rank high, bad teams rank low — while the efficiency component still captures genuine coaching edge.
                 </p>
 
                 <h3>Notes</h3>
@@ -876,16 +881,26 @@ RED = Actual Wins − Expected Wins
             }
         }
 
-        // ── RED Calculation: Pythagorean Win Expectation ─────────────────────────
-        // Formula developed by Bill James, adapted for basketball (exp = 13.91).
-        // Expected Win% = PtsFor^13.91 / (PtsFor^13.91 + PtsAgainst^13.91)
-        // RED = Actual Wins − Pythagorean Expected Wins
+        // ── RED Calculation: Hybrid Quality + Pythagorean Efficiency ────────────
         //
-        // Interpretation:
-        //   Positive RED → coach winning MORE games than scoring margin predicts
-        //   Negative RED → team underperforming its point differential
+        // Problem with pure Pythagorean: bad teams that get blown out but somehow
+        // win a few close games score POSITIVE RED (e.g. Wizards ranked #1). That's
+        // because their terrible differential predicts almost zero wins, so any
+        // actual wins look like coaching genius.
         //
-        // This is entirely current-season data. No preseason projections used.
+        // Fix: blend two components —
+        //   (A) Quality Score   — wins above league-average pace (.500)
+        //                         captures overall team performance
+        //   (B) Efficiency Score — Pythagorean delta (wins above what PPG predicts)
+        //                         captures coaching edge in close games / conversions
+        //
+        //   RED = 0.70 × Quality + 0.30 × Efficiency
+        //
+        // This way good teams rank high (dominated by quality), bad teams rank low,
+        // and the Pythagorean component still rewards coaches squeezing out extra
+        // wins vs their talent level — e.g. Celtics overperforming without Tatum.
+        //
+        // Scale: roughly -15 (worst) to +15 (best) over a full season.
         function calculateRED(wins, losses, ptsFor, ptsAgainst) {
             const gamesPlayed = wins + losses;
             if (gamesPlayed === 0 || ptsFor === 0 || ptsAgainst === 0) {
@@ -893,14 +908,19 @@ RED = Actual Wins − Expected Wins
                          actualLosses: losses, expectedWins: 0, redPerGame: 0 };
             }
 
-            // Pythagorean exponent calibrated for NBA (13.91 is standard)
-            const EXP = 13.91;
-            const pfPow = Math.pow(ptsFor,     EXP);
-            const paPow = Math.pow(ptsAgainst, EXP);
-            const pythWinPct  = pfPow / (pfPow + paPow);
-            const expectedWins = pythWinPct * gamesPlayed;
+            // (A) Quality: wins above .500 pace
+            const winsAboveAvg = wins - (gamesPlayed * 0.5);
 
-            const redScore   = wins - expectedWins;
+            // (B) Pythagorean efficiency: wins above what scoring margin predicts
+            const EXP = 13.91;
+            const pfPow        = Math.pow(ptsFor,     EXP);
+            const paPow        = Math.pow(ptsAgainst, EXP);
+            const pythWinPct   = pfPow / (pfPow + paPow);
+            const expectedWins = pythWinPct * gamesPlayed;
+            const pythDelta    = wins - expectedWins;
+
+            // Blend: quality dominates, efficiency adds nuance
+            const redScore   = (0.70 * winsAboveAvg) + (0.30 * pythDelta);
             const redPerGame = redScore / gamesPlayed;
 
             return {
