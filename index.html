@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RED System - NBA Coaching Performance Dashboard</title>
+    <title>RED System - NBA Team Season Performance</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -611,7 +611,7 @@
                 <div class="red-badge">RED</div>
                 <div class="header-title-text">
                     <h1>Rating of Elite Dominance</h1>
-                    <p>NBA Coaching Performance Analysis</p>
+                    <p>NBA Team Season Performance · 2025–26 Live</p>
                 </div>
             </div>
             <div class="header-controls">
@@ -625,6 +625,7 @@
     <nav style="background:#0f1420;border-bottom:1px solid #2a3040;padding:0 2rem;">
         <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:0;overflow-x:auto;">
             <span style="font-size:0.72rem;color:#666;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;margin-right:16px;padding:12px 0;">Past Seasons</span>
+            <a href="https://redcoachingstat.github.io/RED/1976/" style="display:inline-block;padding:10px 18px;font-size:0.82rem;font-weight:600;color:#888;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.color='#C9A84C';this.style.borderBottomColor='#C9A84C'" onmouseout="this.style.color='#888';this.style.borderBottomColor='transparent'">1975–76</a>
             <a href="https://redcoachingstat.github.io/RED/1986/" style="display:inline-block;padding:10px 18px;font-size:0.82rem;font-weight:600;color:#888;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.color='#C9A84C';this.style.borderBottomColor='#C9A84C'" onmouseout="this.style.color='#888';this.style.borderBottomColor='transparent'">1985–86</a>
             <a href="https://redcoachingstat.github.io/RED/1996/" style="display:inline-block;padding:10px 18px;font-size:0.82rem;font-weight:600;color:#888;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.color='#C9A84C';this.style.borderBottomColor='#C9A84C'" onmouseout="this.style.color='#888';this.style.borderBottomColor='transparent'">1995–96</a>
             <a href="https://redcoachingstat.github.io/RED/2006/" style="display:inline-block;padding:10px 18px;font-size:0.82rem;font-weight:600;color:#888;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.color='#C9A84C';this.style.borderBottomColor='#C9A84C'" onmouseout="this.style.color='#888';this.style.borderBottomColor='transparent'">2005–06</a>
@@ -635,7 +636,7 @@
     </nav>
 
     <div class="disclaimer-banner">
-        <strong>RED — Mid-Season Edition:</strong> 70% overall performance (wins above .500 pace) + 30% coaching efficiency (Pythagorean). Good teams rank high. Descriptive only — not predictive.
+        <strong>RED — Mid-Season Edition:</strong> 70% overall performance (wins above .500 pace) + 30% Pythagorean efficiency. Rates how dominant a team is relative to what their stats predict. Descriptive only — not predictive.
     </div>
 
     <div class="container">
@@ -648,11 +649,11 @@
         <div id="resultsContainer" style="display: none;">
             <div class="results-header">
                 <div class="results-info">
-                    <strong id="teamCount">0</strong> teams analyzed · <span id="dataTimestamp"></span>
+                    <strong id="teamCount">0</strong> teams · 2025–26 season · <span id="dataTimestamp"></span>
                 </div>
                 <div style="display:flex;align-items:center;gap:12px;">
-                    <span id="nextRefreshLabel" style="font-size:0.78rem;color:#888;"></span>
-                    <button id="refreshBtn" onclick="manualRefresh()" style="background:#C9A84C;color:#0a0e1a;border:none;padding:6px 14px;border-radius:6px;font-weight:600;cursor:pointer;font-size:0.82rem;font-family:inherit;">⟳ Refresh</button>
+                    <span id="nextRefreshLabel" style="display:none;"></span>
+                    <button id="refreshBtn" onclick="manualRefresh()" style="background:transparent;color:#666;border:1px solid #333;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:0.75rem;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9A84C';this.style.color='#C9A84C'" onmouseout="this.style.borderColor='#333';this.style.color='#666'">⟳</button>
                 </div>
             </div>
             <div class="table-wrapper">
@@ -686,15 +687,15 @@
             </div>
             <div class="modal-body">
                 <p>
-                    <strong>RED (Rating of Elite Dominance)</strong> is a mid-season coaching performance metric. It measures how many more — or fewer — wins a coach has compared to what their team's own scoring margin predicts.
+                    <strong>RED (Rating of Elite Dominance)</strong> is a team season performance metric. It measures how dominant a team truly is — combining their record relative to league-average with how efficiently they convert scoring margin into wins.
                 </p>
 
                 <h3>The Core Idea</h3>
                 <p>
-                    Every team has a "true" performance level hidden in their scoring margins. A team outscoring opponents by 8 points per game should be winning at a very high rate. If they're not, something is off. If they're winning even more than that, the coach is doing something special.
+                    Every team has a "true" performance level hidden in their scoring margins. A team outscoring opponents by 8 points per game should be winning at a very high rate. If they're not, something is off — whether that's poor clutch play, bad luck, or other factors. If they're winning even more than their margin predicts, they're doing something special.
                 </p>
                 <p>
-                    RED captures exactly that gap — using only <strong>current season data</strong>. No preseason projections. No roster rankings. Just: how does this team's actual record compare to what their point differential says it should be?
+                    RED captures exactly that gap — using only <strong>current season data</strong>. No preseason projections. No roster rankings. Just: how does this team's actual record compare to what their point differential says it should be? This makes RED naturally era-neutral, so teams from different decades can be fairly compared.
                 </p>
 
                 <h3>The Formula</h3>
@@ -712,13 +713,13 @@ RED = (0.70 × Quality) + (0.30 × Efficiency)
 
                 <h3>Interpretation</h3>
                 <p>
-                    <strong>Positive RED:</strong> Team is winning above league-average pace and/or converting their scoring margin into wins efficiently. Elite teams with great coaches score highest.
+                    <strong>Positive RED:</strong> Team is winning above league-average pace and/or converting their scoring margin into wins efficiently. Truly dominant teams score highest regardless of era.
                 </p>
                 <p>
-                    <strong>Negative RED:</strong> Team is below .500 pace and/or underperforming their point differential. Poor results regardless of circumstances.
+                    <strong>Negative RED:</strong> Team is below .500 pace and/or underperforming their point differential. Poor results regardless of talent level.
                 </p>
                 <p>
-                    <strong>The coaching signal:</strong> The Pythagorean component (30%) rewards coaches squeezing extra wins beyond what their team's raw scoring says they deserve — like Boston overperforming without Jayson Tatum, or a defense-first team winning tight games.
+                    <strong>The efficiency signal:</strong> The Pythagorean component (30%) rewards teams squeezing extra wins beyond what their raw scoring says they deserve — like a defense-first team winning tight games, or a unit that peaks in clutch moments.
                 </p>
 
                 <h3>Why this blend?</h3>
