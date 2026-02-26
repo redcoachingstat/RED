@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RED — 1975–76 Season</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+        --bg:       #F5F2EC;
+        --surface:  #FFFFFF;
+        --border:   #E0D8CC;
+        --text:     #1a1a1a;
+        --muted:    #888;
+        --gold:     #C9A84C;
+        --gold-lt:  #F5EDD6;
+        --green:    #166534;
+        --red-neg:  #991B1B;
+        --orange:   #92400E;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+    /* ── HEADER ── */
+    header {
+        background: var(--surface);
+        border-bottom: 3px solid var(--gold);
+        padding: 1.2rem 2rem;
+        position: sticky; top: 0; z-index: 100;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .logo { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; color: var(--gold); letter-spacing: 4px; line-height: 1; }
+    .logo-sub { font-size: 0.7rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; font-weight: 400; margin-top: 2px; }
+    .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .season-pill { background: var(--gold); color: #fff; padding: 5px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.5px; }
+
+    /* ── SEASON NAV ── */
+    .season-nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; overflow-x: auto; }
+    .season-nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 0; }
+    .nav-label { font-size: 0.68rem; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap; padding: 10px 16px 10px 0; border-right: 1px solid var(--border); margin-right: 4px; }
+    .nav-link { display: inline-block; padding: 10px 16px; font-size: 0.82rem; font-weight: 500; color: var(--muted); text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.15s; font-family: 'Inter', sans-serif; }
+    .nav-link:hover { color: var(--gold); border-bottom-color: var(--gold); }
+    .nav-link.active { color: var(--gold); border-bottom-color: var(--gold); font-weight: 700; }
+    .nav-spacer { flex: 1; }
+
+    /* ── MAIN LAYOUT ── */
+    main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+    /* ── MASTHEAD BANNER ── */
+    .masthead { text-align: center; padding: 2rem 0 1.5rem; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+    .masthead h2 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--muted); font-weight: 400; letter-spacing: 0.5px; }
+    .masthead-subtitle { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+
+    /* ── CONTROLS BAR ── */
+    .controls { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .controls-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .meta-text { font-size: 0.82rem; color: var(--muted); }
+    .search-input {
+        font-family: 'Inter', sans-serif;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 8px 14px; border-radius: 8px; font-size: 0.85rem;
+        width: 220px; outline: none; transition: border-color 0.15s;
+    }
+    .search-input:focus { border-color: var(--gold); }
+
+    /* ── TABLE ── */
+    .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; overflow-x: auto; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    table { width: 100%; border-collapse: collapse; min-width: 680px; }
+    thead { background: var(--bg); }
+    th {
+        padding: 11px 16px; text-align: left; font-size: 0.7rem; font-weight: 700;
+        letter-spacing: 1.2px; color: var(--muted); text-transform: uppercase;
+        border-bottom: 2px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none;
+    }
+    th:hover { color: var(--gold); }
+    td { padding: 12px 16px; font-size: 0.88rem; border-bottom: 1px solid var(--border); white-space: nowrap; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #FDFBF5; }
+    .rank-cell { font-weight: 700; color: var(--muted); font-size: 0.9rem; width: 54px; }
+    .medal { margin-right: 4px; }
+    .team-name { font-weight: 600; font-size: 0.9rem; }
+    .coach-name { font-size: 0.83rem; color: var(--muted); }
+    .record-cell { font-family: monospace; font-size: 0.83rem; color: var(--muted); }
+    .mono { font-family: monospace; font-size: 0.83rem; }
+    .sort-arrow { margin-left: 3px; font-size: 0.7rem; }
+
+    /* ── RED SCORE BADGE ── */
+    .red-badge {
+        display: inline-block; font-weight: 700; font-size: 0.95rem; font-family: monospace;
+        padding: 2px 10px; border-radius: 6px; min-width: 72px; text-align: center;
+    }
+    .red-excellent { background: #DCFCE7; color: var(--green); }
+    .red-good      { background: #FEF9C3; color: #854D0E; }
+    .red-neutral   { background: #F3F4F6; color: #374151; }
+    .red-poor      { background: #FEE2E2; color: #B91C1C; }
+    .red-bad       { background: #FEE2E2; color: var(--red-neg); }
+
+    /* ── FORMULA FOOTER ── */
+    .formula-footer {
+        margin-top: 1.5rem; padding: 1.2rem 1.6rem;
+        background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--gold);
+        border-radius: 8px; font-size: 0.82rem; color: var(--muted); line-height: 1.8;
+    }
+    .formula-footer strong { color: var(--text); }
+    .formula-code { font-family: monospace; background: var(--bg); padding: 4px 10px; border-radius: 4px; color: var(--gold); display: inline-block; margin: 4px 0; }
+
+    /* ── ERA NOTE ── */
+    .era-note {
+        margin-top: 1rem; padding: 0.9rem 1.4rem;
+        background: #FEF9C3; border: 1px solid #FDE68A; border-left: 4px solid #D97706;
+        border-radius: 8px; font-size: 0.8rem; color: #78350F; line-height: 1.7;
+    }
+
+    /* ── BACK LINK ── */
+    .back-link {
+        font-size: 0.82rem; color: var(--gold); text-decoration: none;
+        border: 1px solid var(--gold); padding: 5px 14px; border-radius: 6px;
+        transition: all 0.15s; font-weight: 500;
+    }
+    .back-link:hover { background: var(--gold); color: #fff; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+    /* ── MOBILE RESPONSIVE ── */
+    @media (max-width: 768px) {
+        header { padding: 0.8rem 1rem; }
+        .logo { font-size: 1.6rem; letter-spacing: 2px; }
+        .header-right { gap: 6px; }
+        .season-pill { font-size: 0.7rem; padding: 4px 10px; }
+        .back-link { font-size: 0.74rem; padding: 4px 10px; }
+        main { padding: 1rem; }
+        .masthead { padding: 1.2rem 0 1rem; }
+        .masthead h2 { font-size: 0.9rem; }
+        .masthead-subtitle { font-size: 0.75rem; }
+        .controls { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+        .search-input { width: 100%; max-width: none; }
+        .table-card { border-radius: 6px; }
+        table { min-width: 500px; }
+        th { padding: 8px 10px; font-size: 0.65rem; }
+        td { padding: 9px 10px; font-size: 0.82rem; }
+        .red-badge { min-width: 60px; font-size: 0.85rem; padding: 2px 7px; }
+        .formula-footer { font-size: 0.76rem; padding: 1rem 1.1rem; }
+        .season-nav { padding: 0 0.5rem; }
+        .nav-link { padding: 8px 11px; font-size: 0.75rem; }
+        .nav-label { font-size: 0.62rem; padding: 8px 10px 8px 0; }
+    }
+    @media (max-width: 480px) {
+        .logo { font-size: 1.4rem; }
+        th, td { padding: 7px 8px; font-size: 0.78rem; }
+        .meta-text { font-size: 0.75rem; }
+    }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="logo">RED</div>
+      <div class="logo-sub">Rating of Elite Dominance</div>
+    </div>
+    <div class="header-right">
+      <span class="season-pill">1975–76</span>
+      <a href="https://redcoachingstat.github.io/RED/" class="back-link">← 2025–26 Live</a>
+    </div>
+  </div>
+</header>
+<nav class="season-nav">
+    <div class="season-nav-inner">
+        <span class="nav-label">RED Archive</span>
+        <a href="https://redcoachingstat.github.io/RED/" class="nav-link">2025–26 Live</a><a href="https://redcoachingstat.github.io/RED/all/" class="nav-link">All Seasons</a><a href="https://redcoachingstat.github.io/RED/1976/" class="nav-link active">1975–76</a><a href="https://redcoachingstat.github.io/RED/1986/" class="nav-link">1985–86</a><a href="https://redcoachingstat.github.io/RED/1996/" class="nav-link">1995–96</a><a href="https://redcoachingstat.github.io/RED/2006/" class="nav-link">2005–06</a><a href="https://redcoachingstat.github.io/RED/2016/" class="nav-link">2015–16</a>
+        <span class="nav-spacer"></span>
+    </div>
+</nav>
+<main>
+  <div class="masthead">
+    <h2>Al Attles' Warriors &amp; the Miracle Suns — The Pre-Bird/Magic Era</h2>
+    <p class="masthead-subtitle">Final regular season standings &nbsp;·&nbsp; 18 teams · Last season before the ABA–NBA merger</p>
+  </div>
+  <div class="controls">
+    <div class="controls-left">
+      <span class="meta-text" id="teamCount">0</span>
+      <span class="meta-text">teams &nbsp;·&nbsp; Historical data</span>
+    </div>
+    <input type="text" class="search-input" id="searchBox" placeholder="Search team or coach…">
+  </div>
+  <div class="table-card">
+    <table id="leaderboard">
+      <thead><tr>
+        <th data-sort="rank">Rank</th>
+        <th data-sort="team">Team</th>
+        <th data-sort="coach">Coach</th>
+        <th data-sort="red">RED Score</th>
+        <th data-sort="rpg">RED/G</th>
+        <th data-sort="record">Record</th>
+        <th data-sort="gp">GP</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div class="formula-footer">
+    <strong>RED Formula (Base):</strong>
+    <span class="formula-code">RED = 0.70 × WinsAbove.500 &nbsp;+&nbsp; 0.30 × PythagoreanDelta</span><br>
+    <strong>WinsAbove.500</strong> = actual wins − (games × 0.5) &nbsp;&nbsp;
+    <strong>PythagoreanDelta</strong> = actual wins − (PtsFor<sup>13.91</sup> / (PtsFor<sup>13.91</sup> + PtsAgainst<sup>13.91</sup>) × GP)<br>
+    All historical seasons use the base formula for direct cross-era comparison.
+  </div>
+  <div class="era-note">
+    <strong>Era context:</strong> The 1975–76 season was the final year before the ABA–NBA merger (1976–77), which brought in 4 new franchises including Denver, San Antonio, Indiana, and New York. The league had 18 teams. The Phoenix Suns reached the Finals despite a 42–40 record — a testament to the wide-open West that year. Stats sourced from historical records; point differentials are approximated from period box scores.
+  </div>
+</main>
+<script>
+const RAW = [
+    { name: "Golden State Warriors",   coach: "Al Attles",                         wins: 59, losses: 23, ptsFor: 108.3, ptsAgainst: 100.6 },
+    { name: "Boston Celtics",          coach: "Tommy Heinsohn / Tom Sanders",       wins: 54, losses: 28, ptsFor: 106.2, ptsAgainst: 101.4 },
+    { name: "Cleveland Cavaliers",     coach: "Bill Fitch",                         wins: 49, losses: 33, ptsFor: 104.4, ptsAgainst: 101.5 },
+    { name: "Washington Bullets",      coach: "K.C. Jones",                         wins: 48, losses: 34, ptsFor: 104.8, ptsAgainst: 101.4 },
+    { name: "Philadelphia 76ers",      coach: "Gene Shue",                          wins: 46, losses: 36, ptsFor: 105.2, ptsAgainst: 103.2 },
+    { name: "Buffalo Braves",          coach: "Tates Locke / Bob MacKinnon",        wins: 46, losses: 36, ptsFor: 110.2, ptsAgainst: 108.1 },
+    { name: "Kansas City Kings",       coach: "Phil Johnson",                       wins: 44, losses: 38, ptsFor: 103.6, ptsAgainst: 100.9 },
+    { name: "Seattle SuperSonics",     coach: "Bill Russell",                       wins: 43, losses: 39, ptsFor: 104.5, ptsAgainst: 103.5 },
+    { name: "Phoenix Suns",            coach: "John MacLeod",                       wins: 42, losses: 40, ptsFor: 106.0, ptsAgainst: 106.2 },
+    { name: "Houston Rockets",         coach: "Tom Nissalke",                       wins: 40, losses: 42, ptsFor: 105.1, ptsAgainst: 106.9 },
+    { name: "Los Angeles Lakers",      coach: "Bill Sharman",                       wins: 40, losses: 42, ptsFor: 104.7, ptsAgainst: 106.4 },
+    { name: "New Orleans Jazz",        coach: "Scotty Robertson",                   wins: 38, losses: 44, ptsFor: 102.8, ptsAgainst: 106.0 },
+    { name: "Milwaukee Bucks",         coach: "Larry Costello",                     wins: 38, losses: 44, ptsFor: 103.5, ptsAgainst: 106.0 },
+    { name: "New York Knicks",         coach: "Red Holzman",                        wins: 38, losses: 44, ptsFor: 101.8, ptsAgainst: 103.5 },
+    { name: "Portland Trail Blazers",  coach: "Lenny Wilkens",                      wins: 37, losses: 45, ptsFor: 105.4, ptsAgainst: 108.9 },
+    { name: "Detroit Pistons",         coach: "Herb Brown",                         wins: 36, losses: 46, ptsFor: 103.2, ptsAgainst: 107.4 },
+    { name: "Atlanta Hawks",           coach: "Cotton Fitzsimmons",                 wins: 29, losses: 53, ptsFor: 103.1, ptsAgainst: 108.7 },
+    { name: "Chicago Bulls",           coach: "Dick Motta",                         wins: 24, losses: 58, ptsFor: 100.3, ptsAgainst: 107.3 },
+];
+let all = [], sort = {col:'red',dir:'desc'};
+
+function calcRED(w,l,pf,pa){
+  const gp=w+l; const waa=w-gp*0.5; const E=13.91;
+  const pyth=(pf**E/(pf**E+pa**E))*gp;
+  const red=0.70*waa+0.30*(w-pyth);
+  return {red:parseFloat(red.toFixed(2)),rpg:parseFloat((red/gp).toFixed(4)),gp};
+}
+function cls(s){
+  return s>6?'excellent':s>2?'good':s>-2?'neutral':s>-6?'poor':'bad';
+}
+function medal(r){ return r===1?'🥇':r===2?'🥈':r===3?'🥉':''; }
+function sg(v,d=2){ return (v>=0?'+':'')+v.toFixed(d); }
+
+function render(data){
+  const tbody=document.getElementById('tbody');
+  tbody.innerHTML='';
+  data.forEach((t,i)=>{
+    const r=i+1; const row=document.createElement('tr');
+    row.innerHTML=`
+      <td class="rank-cell"><span class="medal">${medal(r)}</span>${r}</td>
+      <td><div class="team-name">${t.name}</div></td>
+      <td><div class="coach-name">${t.coach}</div></td>
+      <td><span class="red-badge red-${cls(t.red)}">${sg(t.red)}</span></td>
+      <td class="mono">${sg(t.rpg,4)}</td>
+      <td class="record-cell">${t.wins}-${t.losses}</td>
+      <td class="mono">${t.gp}</td>`;
+    tbody.appendChild(row);
+  });
+  document.getElementById('teamCount').textContent=data.length;
+}
+
+RAW.forEach(t=>{
+  const {red,rpg,gp}=calcRED(t.wins,t.losses,t.ptsFor,t.ptsAgainst);
+  all.push({...t,red,rpg,gp});
+});
+all.sort((a,b)=>b.red-a.red);
+render(all);
+
+document.querySelectorAll('th[data-sort]').forEach(th=>{
+  th.addEventListener('click',()=>{
+    const c=th.dataset.sort;
+    sort.dir=(sort.col===c&&sort.dir==='desc')?'asc':'desc';
+    sort.col=c;
+    const sorted=[...all].sort((a,b)=>{
+      const av=c==='team'?a.name:c==='coach'?a.coach:c==='red'?a.red:c==='rpg'?a.rpg:c==='record'?a.wins:c==='gp'?a.gp:all.indexOf(a);
+      const bv=c==='team'?b.name:c==='coach'?b.coach:c==='red'?b.red:c==='rpg'?b.rpg:c==='record'?b.wins:c==='gp'?b.gp:all.indexOf(b);
+      if(typeof av==='string') return sort.dir==='asc'?av.localeCompare(bv):bv.localeCompare(av);
+      return sort.dir==='asc'?av-bv:bv-av;
+    });
+    render(sorted);
+  });
+});
+document.getElementById('searchBox').addEventListener('input',e=>{
+  const q=e.target.value.toLowerCase();
+  render(all.filter(t=>t.name.toLowerCase().includes(q)||t.coach.toLowerCase().includes(q)));
+});
+</script>
+</body></html>
