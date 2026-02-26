@@ -1,0 +1,2264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RED — All Seasons</title>
+<style>
+
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+        --bg:       #F5F2EC;
+        --surface:  #FFFFFF;
+        --border:   #E0D8CC;
+        --text:     #1a1a1a;
+        --muted:    #888;
+        --gold:     #C9A84C;
+        --gold-lt:  #F5EDD6;
+        --green:    #166534;
+        --red-neg:  #991B1B;
+        --orange:   #92400E;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+    /* ── HEADER ── */
+    header {
+        background: var(--surface);
+        border-bottom: 3px solid var(--gold);
+        padding: 1.2rem 2rem;
+        position: sticky; top: 0; z-index: 100;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .logo { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; color: var(--gold); letter-spacing: 4px; line-height: 1; }
+    .logo-sub { font-size: 0.7rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; font-weight: 400; margin-top: 2px; }
+    .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .season-pill { background: var(--gold); color: #fff; padding: 5px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.5px; }
+
+    /* ── SEASON NAV ── */
+    .season-nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; overflow-x: auto; }
+    .season-nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 0; }
+    .nav-label { font-size: 0.68rem; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap; padding: 10px 16px 10px 0; border-right: 1px solid var(--border); margin-right: 4px; }
+    .nav-link { display: inline-block; padding: 10px 16px; font-size: 0.82rem; font-weight: 500; color: var(--muted); text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.15s; font-family: 'Inter', sans-serif; }
+    .nav-link:hover { color: var(--gold); border-bottom-color: var(--gold); }
+    .nav-link.active { color: var(--gold); border-bottom-color: var(--gold); font-weight: 700; }
+    .nav-spacer { flex: 1; }
+
+    /* ── MAIN LAYOUT ── */
+    main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+    /* ── MASTHEAD BANNER ── */
+    .masthead { text-align: center; padding: 2rem 0 1.5rem; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+    .masthead h2 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--muted); font-weight: 400; letter-spacing: 0.5px; }
+    .masthead-subtitle { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+
+    /* ── CONTROLS BAR ── */
+    .controls { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .controls-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .meta-text { font-size: 0.82rem; color: var(--muted); }
+    .search-input {
+        font-family: 'Inter', sans-serif;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 8px 14px; border-radius: 8px; font-size: 0.85rem;
+        width: 220px; outline: none; transition: border-color 0.15s;
+    }
+    .search-input:focus { border-color: var(--gold); }
+
+    /* ── TABLE ── */
+    .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; overflow-x: auto; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    table { width: 100%; border-collapse: collapse; min-width: 680px; }
+    thead { background: var(--bg); }
+    th {
+        padding: 11px 16px; text-align: left; font-size: 0.7rem; font-weight: 700;
+        letter-spacing: 1.2px; color: var(--muted); text-transform: uppercase;
+        border-bottom: 2px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none;
+    }
+    th:hover { color: var(--gold); }
+    td { padding: 12px 16px; font-size: 0.88rem; border-bottom: 1px solid var(--border); white-space: nowrap; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #FDFBF5; }
+    .rank-cell { font-weight: 700; color: var(--muted); font-size: 0.9rem; width: 54px; }
+    .medal { margin-right: 4px; }
+    .team-name { font-weight: 600; font-size: 0.9rem; }
+    .coach-name { font-size: 0.83rem; color: var(--muted); }
+    .record-cell { font-family: monospace; font-size: 0.83rem; color: var(--muted); }
+    .mono { font-family: monospace; font-size: 0.83rem; }
+    .sort-arrow { margin-left: 3px; font-size: 0.7rem; }
+
+    /* ── RED SCORE BADGE ── */
+    .red-badge {
+        display: inline-block; font-weight: 700; font-size: 0.95rem; font-family: monospace;
+        padding: 2px 10px; border-radius: 6px; min-width: 72px; text-align: center;
+    }
+    .red-excellent { background: #DCFCE7; color: var(--green); }
+    .red-good      { background: #FEF9C3; color: #854D0E; }
+    .red-neutral   { background: #F3F4F6; color: #374151; }
+    .red-poor      { background: #FEE2E2; color: #B91C1C; }
+    .red-bad       { background: #FEE2E2; color: var(--red-neg); }
+
+    /* ── FORMULA FOOTER ── */
+    .formula-footer {
+        margin-top: 1.5rem; padding: 1.2rem 1.6rem;
+        background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--gold);
+        border-radius: 8px; font-size: 0.82rem; color: var(--muted); line-height: 1.8;
+    }
+    .formula-footer strong { color: var(--text); }
+    .formula-code { font-family: monospace; background: var(--bg); padding: 4px 10px; border-radius: 4px; color: var(--gold); display: inline-block; margin: 4px 0; }
+    
+    /* ── BACK LINK ── */
+    .back-link {
+        font-size: 0.82rem; color: var(--gold); text-decoration: none;
+        border: 1px solid var(--gold); padding: 5px 14px; border-radius: 6px;
+        transition: all 0.15s; font-weight: 500;
+    }
+    .back-link:hover { background: var(--gold); color: #fff; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+    .year-filters { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .yr-btn {
+        padding:5px 14px; border-radius:20px; font-size:0.78rem; font-weight:600; cursor:pointer;
+        border:1px solid var(--border); background:var(--surface); color:var(--muted);
+        font-family:'Inter',sans-serif; transition:all 0.15s; white-space:nowrap;
+    }
+    .yr-btn.on { background:var(--gold); border-color:var(--gold); color:#fff; }
+    .yr-btn.all-btn { border-color:var(--text); color:var(--text); }
+    .yr-btn.all-btn.on { background:var(--text); border-color:var(--text); color:#fff; }
+    .season-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+    /* ── MOBILE RESPONSIVE ── */
+    @media (max-width: 768px) {
+        header { padding: 0.8rem 1rem; }
+        .logo { font-size: 1.6rem; letter-spacing: 2px; }
+        main { padding: 1rem; }
+        .masthead { padding: 1.2rem 0 1rem; }
+        .masthead h2 { font-size: 0.95rem; }
+        .controls { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+        .year-filters { flex-wrap: wrap; gap: 6px; }
+        .yr-btn { font-size: 0.72rem; padding: 4px 10px; }
+        .search-input { width: 100%; max-width: none; }
+        th { padding: 8px 10px; font-size: 0.62rem; }
+        td { padding: 9px 10px; font-size: 0.82rem; }
+        .red-badge { min-width: 60px; font-size: 0.85rem; padding: 2px 7px; }
+        .formula-footer { font-size: 0.76rem; padding: 1rem 1.1rem; }
+        .season-nav { padding: 0 0.5rem; }
+        .nav-link { padding: 8px 11px; font-size: 0.75rem; }
+        table { min-width: 560px; }
+    }
+    @media (max-width: 480px) {
+        .logo { font-size: 1.4rem; }
+        th, td { padding: 7px 8px; font-size: 0.76rem; }
+        .meta-text { font-size: 0.74rem; }
+    }
+
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="logo">RED</div>
+      <div class="logo-sub">Rating of Elite Dominance · All Seasons</div>
+    </div>
+    <div class="header-right">
+      <span class="season-pill">All Seasons</span>
+      <a href="https://redcoachingstat.github.io/RED/" class="back-link">← 2025–26 Live</a>
+    </div>
+  </div>
+</header>
+<nav class="season-nav">
+        <div class="season-nav-inner">
+            <span class="nav-label">RED Archive</span>
+            <a href="https://redcoachingstat.github.io/RED/" class="nav-link">2025–26 Live</a><a href="https://redcoachingstat.github.io/RED/all/" class="nav-link active">All Seasons</a><a href="https://redcoachingstat.github.io/RED/1976/" class="nav-link">1975–76</a><a href="https://redcoachingstat.github.io/RED/1986/" class="nav-link">1985–86</a><a href="https://redcoachingstat.github.io/RED/1996/" class="nav-link">1995–96</a><a href="https://redcoachingstat.github.io/RED/2006/" class="nav-link">2005–06</a><a href="https://redcoachingstat.github.io/RED/2016/" class="nav-link">2015–16</a>
+            <span class="nav-spacer"></span>
+        </div>
+    </nav>
+<main>
+  <div class="masthead">
+    <h2>Greatest NBA Team Seasons, 1975–76 to Present</h2>
+    <p class="masthead-subtitle">Compare every team across five decades · 1975–76 · 1985–86 · 1995–96 · 2005–06 · 2015–16 · 2025–26 Live</p>
+  </div>
+
+  <div class="controls" style="margin-bottom:0.5rem;">
+    <div class="year-filters" id="yearFilters">
+      <button class="yr-btn all-btn on" data-year="all">All Seasons</button>
+      <button class="yr-btn" data-year="2025-26" style="border-left:3px solid #C9A84C;">2025–26 Live</button>
+      <button class="yr-btn" data-year="2015-16" style="border-left:3px solid #3B82F6;">2015–16</button>
+      <button class="yr-btn" data-year="2005-06" style="border-left:3px solid #10B981;">2005–06</button>
+      <button class="yr-btn" data-year="1995-96" style="border-left:3px solid #F59E0B;">1995–96</button>
+      <button class="yr-btn" data-year="1985-86" style="border-left:3px solid #EF4444;">1985–86</button>
+      <button class="yr-btn" data-year="1975-76" style="border-left:3px solid #8B5CF6;">1975–76</button>
+    </div>
+  </div>
+  <div class="controls">
+    <span class="meta-text"><span id="rowCount">0</span> entries &nbsp;·&nbsp; <span id="srcNote">loading…</span></span>
+    <input type="text" class="search-input" id="searchBox" placeholder="Search team or coach…">
+  </div>
+
+  <div class="table-card">
+    <table id="masterTable">
+      <thead><tr>
+        <th data-sort="rank" style="width:54px;">Rank</th>
+        <th data-sort="season" style="width:90px;">Season</th>
+        <th data-sort="team">Team</th>
+        <th data-sort="coach">Coach</th>
+        <th data-sort="red">RED Score</th>
+        <th data-sort="rpg">RED/G</th>
+        <th data-sort="record">Record</th>
+        <th data-sort="gp">GP</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="formula-footer">
+    <strong>Why RED?</strong> RED answers one question: <em>how dominant was this team relative to what their own stats predict?</em>
+    It combines winning production (wins above .500) with Pythagorean efficiency, giving a single era-neutral number that surfaces genuinely great teams — whether that's the 1975–76 Warriors or the 2015–16 Warriors.
+    Historical seasons use: <span class="formula-code">RED = 0.70 × WinsAbove.500 + 0.30 × PythagoreanDelta</span>
+    &nbsp;|&nbsp; 2025–26 uses an enhanced formula with injury-adjusted roster expectations.
+  </div>
+</main>
+
+<script>
+// ── Historical data ──────────────────────────────────────────────────────────
+const HIST = [
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Boston Celtics",
+        "coach": "K.C. Jones",
+        "wins": 67,
+        "losses": 15,
+        "ptsFor": 114.1,
+        "ptsAgainst": 104.3,
+        "redScore": 19.18,
+        "redPerGame": 0.2339,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Los Angeles Lakers",
+        "coach": "Pat Riley",
+        "wins": 62,
+        "losses": 20,
+        "ptsFor": 116.2,
+        "ptsAgainst": 107.4,
+        "redScore": 14.86,
+        "redPerGame": 0.1813,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Milwaukee Bucks",
+        "coach": "Don Nelson",
+        "wins": 57,
+        "losses": 25,
+        "ptsFor": 107.0,
+        "ptsAgainst": 102.4,
+        "redScore": 12.35,
+        "redPerGame": 0.1507,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Philadelphia 76ers",
+        "coach": "Matt Guokas",
+        "wins": 54,
+        "losses": 28,
+        "ptsFor": 108.0,
+        "ptsAgainst": 104.3,
+        "redScore": 10.07,
+        "redPerGame": 0.1229,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Atlanta Hawks",
+        "coach": "Mike Fratello",
+        "wins": 50,
+        "losses": 32,
+        "ptsFor": 108.6,
+        "ptsAgainst": 108.2,
+        "redScore": 8.68,
+        "redPerGame": 0.1059,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Houston Rockets",
+        "coach": "Bill Fitch",
+        "wins": 51,
+        "losses": 31,
+        "ptsFor": 113.1,
+        "ptsAgainst": 109.2,
+        "redScore": 7.06,
+        "redPerGame": 0.0861,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Denver Nuggets",
+        "coach": "Doug Moe",
+        "wins": 47,
+        "losses": 35,
+        "ptsFor": 126.5,
+        "ptsAgainst": 120.6,
+        "redScore": 2.06,
+        "redPerGame": 0.0251,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Detroit Pistons",
+        "coach": "Chuck Daly",
+        "wins": 46,
+        "losses": 36,
+        "ptsFor": 107.2,
+        "ptsAgainst": 104.8,
+        "redScore": 3.08,
+        "redPerGame": 0.0375,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Dallas Mavericks",
+        "coach": "Dick Motta",
+        "wins": 44,
+        "losses": 38,
+        "ptsFor": 107.3,
+        "ptsAgainst": 106.6,
+        "redScore": 2.44,
+        "redPerGame": 0.0298,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Utah Jazz",
+        "coach": "Frank Layden",
+        "wins": 42,
+        "losses": 40,
+        "ptsFor": 102.1,
+        "ptsAgainst": 105.4,
+        "redScore": 3.68,
+        "redPerGame": 0.0448,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Portland Trail Blazers",
+        "coach": "Jack Ramsay",
+        "wins": 40,
+        "losses": 42,
+        "ptsFor": 107.0,
+        "ptsAgainst": 109.5,
+        "redScore": 0.96,
+        "redPerGame": 0.0117,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "New Jersey Nets",
+        "coach": "Dave Wohl",
+        "wins": 39,
+        "losses": 43,
+        "ptsFor": 106.0,
+        "ptsAgainst": 110.6,
+        "redScore": 1.53,
+        "redPerGame": 0.0187,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Washington Bullets",
+        "coach": "Gene Shue",
+        "wins": 39,
+        "losses": 43,
+        "ptsFor": 106.7,
+        "ptsAgainst": 107.8,
+        "redScore": -1.12,
+        "redPerGame": -0.0137,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Sacramento Kings",
+        "coach": "Phil Johnson",
+        "wins": 37,
+        "losses": 45,
+        "ptsFor": 104.8,
+        "ptsAgainst": 112.4,
+        "redScore": 1.56,
+        "redPerGame": 0.019,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "San Antonio Spurs",
+        "coach": "Cotton Fitzsimmons",
+        "wins": 35,
+        "losses": 47,
+        "ptsFor": 107.8,
+        "ptsAgainst": 113.8,
+        "redScore": -1.57,
+        "redPerGame": -0.0192,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Phoenix Suns",
+        "coach": "John MacLeod",
+        "wins": 32,
+        "losses": 50,
+        "ptsFor": 107.4,
+        "ptsAgainst": 112.9,
+        "redScore": -4.89,
+        "redPerGame": -0.0597,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Los Angeles Clippers",
+        "coach": "Don Chaney",
+        "wins": 32,
+        "losses": 50,
+        "ptsFor": 104.9,
+        "ptsAgainst": 114.2,
+        "redScore": -2.48,
+        "redPerGame": -0.0302,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Seattle SuperSonics",
+        "coach": "Bernie Bickerstaff",
+        "wins": 31,
+        "losses": 51,
+        "ptsFor": 103.8,
+        "ptsAgainst": 111.2,
+        "redScore": -4.52,
+        "redPerGame": -0.0551,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Golden State Warriors",
+        "coach": "John Bach",
+        "wins": 30,
+        "losses": 52,
+        "ptsFor": 108.5,
+        "ptsAgainst": 116.0,
+        "redScore": -5.66,
+        "redPerGame": -0.069,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Chicago Bulls",
+        "coach": "Stan Albeck",
+        "wins": 30,
+        "losses": 52,
+        "ptsFor": 103.0,
+        "ptsAgainst": 108.7,
+        "redScore": -6.6,
+        "redPerGame": -0.0804,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Cleveland Cavaliers",
+        "coach": "George Karl",
+        "wins": 29,
+        "losses": 53,
+        "ptsFor": 100.6,
+        "ptsAgainst": 108.6,
+        "redScore": -6.01,
+        "redPerGame": -0.0733,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "Indiana Pacers",
+        "coach": "George Irvine",
+        "wins": 26,
+        "losses": 56,
+        "ptsFor": 104.0,
+        "ptsAgainst": 115.6,
+        "redScore": -7.3,
+        "redPerGame": -0.089,
+        "gp": 82
+    },
+    {
+        "season": "1985-86",
+        "seasonLabel": "1985\u201386",
+        "urlKey": "1986",
+        "name": "New York Knicks",
+        "coach": "Hubie Brown",
+        "wins": 24,
+        "losses": 58,
+        "ptsFor": 104.7,
+        "ptsAgainst": 117.1,
+        "redScore": -8.98,
+        "redPerGame": -0.1095,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Chicago Bulls",
+        "coach": "Phil Jackson",
+        "wins": 72,
+        "losses": 10,
+        "ptsFor": 105.2,
+        "ptsAgainst": 92.9,
+        "redScore": 22.41,
+        "redPerGame": 0.2732,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Seattle SuperSonics",
+        "coach": "George Karl",
+        "wins": 64,
+        "losses": 18,
+        "ptsFor": 107.1,
+        "ptsAgainst": 99.2,
+        "redScore": 17.0,
+        "redPerGame": 0.2073,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Orlando Magic",
+        "coach": "Brian Hill",
+        "wins": 60,
+        "losses": 22,
+        "ptsFor": 105.9,
+        "ptsAgainst": 98.3,
+        "redScore": 13.14,
+        "redPerGame": 0.1603,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "San Antonio Spurs",
+        "coach": "Bob Hill",
+        "wins": 59,
+        "losses": 23,
+        "ptsFor": 100.8,
+        "ptsAgainst": 94.3,
+        "redScore": 12.67,
+        "redPerGame": 0.1546,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Utah Jazz",
+        "coach": "Jerry Sloan",
+        "wins": 55,
+        "losses": 27,
+        "ptsFor": 101.7,
+        "ptsAgainst": 96.2,
+        "redScore": 9.47,
+        "redPerGame": 0.1155,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Indiana Pacers",
+        "coach": "Larry Brown",
+        "wins": 52,
+        "losses": 30,
+        "ptsFor": 102.2,
+        "ptsAgainst": 98.2,
+        "redScore": 7.67,
+        "redPerGame": 0.0935,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Los Angeles Lakers",
+        "coach": "Del Harris",
+        "wins": 53,
+        "losses": 29,
+        "ptsFor": 104.1,
+        "ptsAgainst": 100.8,
+        "redScore": 9.29,
+        "redPerGame": 0.1133,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Houston Rockets",
+        "coach": "Rudy Tomjanovich",
+        "wins": 48,
+        "losses": 34,
+        "ptsFor": 102.2,
+        "ptsAgainst": 99.7,
+        "redScore": 4.9,
+        "redPerGame": 0.0598,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Atlanta Hawks",
+        "coach": "Lenny Wilkens",
+        "wins": 46,
+        "losses": 36,
+        "ptsFor": 103.7,
+        "ptsAgainst": 102.9,
+        "redScore": 4.34,
+        "redPerGame": 0.0529,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Detroit Pistons",
+        "coach": "Doug Collins",
+        "wins": 46,
+        "losses": 36,
+        "ptsFor": 100.6,
+        "ptsAgainst": 100.0,
+        "redScore": 4.49,
+        "redPerGame": 0.0547,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Portland Trail Blazers",
+        "coach": "P.J. Carlesimo",
+        "wins": 44,
+        "losses": 38,
+        "ptsFor": 101.2,
+        "ptsAgainst": 101.5,
+        "redScore": 3.25,
+        "redPerGame": 0.0397,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "New York Knicks",
+        "coach": "Jeff Van Gundy",
+        "wins": 47,
+        "losses": 35,
+        "ptsFor": 96.4,
+        "ptsAgainst": 94.4,
+        "redScore": 4.22,
+        "redPerGame": 0.0515,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Cleveland Cavaliers",
+        "coach": "Mike Fratello",
+        "wins": 47,
+        "losses": 35,
+        "ptsFor": 95.7,
+        "ptsAgainst": 93.8,
+        "redScore": 4.3,
+        "redPerGame": 0.0524,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Miami Heat",
+        "coach": "Pat Riley",
+        "wins": 42,
+        "losses": 40,
+        "ptsFor": 96.4,
+        "ptsAgainst": 97.2,
+        "redScore": 1.71,
+        "redPerGame": 0.0208,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Phoenix Suns",
+        "coach": "Cotton Fitzsimmons",
+        "wins": 41,
+        "losses": 41,
+        "ptsFor": 101.6,
+        "ptsAgainst": 102.8,
+        "redScore": 1.0,
+        "redPerGame": 0.0122,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Charlotte Hornets",
+        "coach": "Allan Bristow",
+        "wins": 41,
+        "losses": 41,
+        "ptsFor": 102.3,
+        "ptsAgainst": 103.1,
+        "redScore": 0.67,
+        "redPerGame": 0.0081,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Sacramento Kings",
+        "coach": "Garry St. Jean",
+        "wins": 39,
+        "losses": 43,
+        "ptsFor": 102.5,
+        "ptsAgainst": 104.8,
+        "redScore": -0.12,
+        "redPerGame": -0.0014,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Washington Bullets",
+        "coach": "Jim Lynam",
+        "wins": 39,
+        "losses": 43,
+        "ptsFor": 100.3,
+        "ptsAgainst": 103.1,
+        "redScore": 0.33,
+        "redPerGame": 0.004,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Denver Nuggets",
+        "coach": "Bernie Bickerstaff",
+        "wins": 35,
+        "losses": 47,
+        "ptsFor": 104.2,
+        "ptsAgainst": 109.2,
+        "redScore": -2.13,
+        "redPerGame": -0.0259,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Golden State Warriors",
+        "coach": "Rick Adelman",
+        "wins": 36,
+        "losses": 46,
+        "ptsFor": 103.8,
+        "ptsAgainst": 109.0,
+        "redScore": -0.97,
+        "redPerGame": -0.0119,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Boston Celtics",
+        "coach": "M.L. Carr",
+        "wins": 33,
+        "losses": 49,
+        "ptsFor": 99.6,
+        "ptsAgainst": 104.4,
+        "redScore": -4.11,
+        "redPerGame": -0.0501,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "New Jersey Nets",
+        "coach": "Butch Beard",
+        "wins": 30,
+        "losses": 52,
+        "ptsFor": 99.7,
+        "ptsAgainst": 106.0,
+        "redScore": -6.05,
+        "redPerGame": -0.0738,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Los Angeles Clippers",
+        "coach": "Bill Fitch",
+        "wins": 29,
+        "losses": 53,
+        "ptsFor": 96.5,
+        "ptsAgainst": 104.4,
+        "redScore": -5.87,
+        "redPerGame": -0.0716,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Philadelphia 76ers",
+        "coach": "John Lucas",
+        "wins": 18,
+        "losses": 64,
+        "ptsFor": 97.3,
+        "ptsAgainst": 111.0,
+        "redScore": -14.09,
+        "redPerGame": -0.1719,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Dallas Mavericks",
+        "coach": "Jim Cleamons",
+        "wins": 26,
+        "losses": 56,
+        "ptsFor": 99.3,
+        "ptsAgainst": 108.3,
+        "redScore": -8.36,
+        "redPerGame": -0.102,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Minnesota Timberwolves",
+        "coach": "Flip Saunders",
+        "wins": 26,
+        "losses": 56,
+        "ptsFor": 101.3,
+        "ptsAgainst": 109.5,
+        "redScore": -8.92,
+        "redPerGame": -0.1088,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Milwaukee Bucks",
+        "coach": "Mike Dunleavy",
+        "wins": 25,
+        "losses": 57,
+        "ptsFor": 99.8,
+        "ptsAgainst": 108.5,
+        "redScore": -9.56,
+        "redPerGame": -0.1166,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Toronto Raptors",
+        "coach": "Brendan Malone",
+        "wins": 21,
+        "losses": 61,
+        "ptsFor": 101.4,
+        "ptsAgainst": 112.4,
+        "redScore": -12.44,
+        "redPerGame": -0.1517,
+        "gp": 82
+    },
+    {
+        "season": "1995-96",
+        "seasonLabel": "1995\u201396",
+        "urlKey": "1996",
+        "name": "Vancouver Grizzlies",
+        "coach": "Brian Winters",
+        "wins": 15,
+        "losses": 67,
+        "ptsFor": 95.8,
+        "ptsAgainst": 108.4,
+        "redScore": -17.44,
+        "redPerGame": -0.2127,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Detroit Pistons",
+        "coach": "Flip Saunders",
+        "wins": 64,
+        "losses": 18,
+        "ptsFor": 96.3,
+        "ptsAgainst": 88.3,
+        "redScore": 16.37,
+        "redPerGame": 0.1996,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "San Antonio Spurs",
+        "coach": "Gregg Popovich",
+        "wins": 63,
+        "losses": 19,
+        "ptsFor": 96.6,
+        "ptsAgainst": 89.7,
+        "redScore": 16.17,
+        "redPerGame": 0.1972,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Dallas Mavericks",
+        "coach": "Avery Johnson",
+        "wins": 60,
+        "losses": 22,
+        "ptsFor": 100.5,
+        "ptsAgainst": 95.2,
+        "redScore": 14.57,
+        "redPerGame": 0.1777,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Phoenix Suns",
+        "coach": "Mike D'Antoni",
+        "wins": 54,
+        "losses": 28,
+        "ptsFor": 110.4,
+        "ptsAgainst": 103.3,
+        "redScore": 7.69,
+        "redPerGame": 0.0937,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Miami Heat",
+        "coach": "Pat Riley",
+        "wins": 52,
+        "losses": 30,
+        "ptsFor": 97.3,
+        "ptsAgainst": 94.6,
+        "redScore": 8.62,
+        "redPerGame": 0.1052,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Cleveland Cavaliers",
+        "coach": "Mike Brown",
+        "wins": 50,
+        "losses": 32,
+        "ptsFor": 97.5,
+        "ptsAgainst": 95.2,
+        "redScore": 6.98,
+        "redPerGame": 0.0851,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "New Jersey Nets",
+        "coach": "Lawrence Frank",
+        "wins": 49,
+        "losses": 33,
+        "ptsFor": 98.4,
+        "ptsAgainst": 97.0,
+        "redScore": 6.78,
+        "redPerGame": 0.0827,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Memphis Grizzlies",
+        "coach": "Mike Fratello",
+        "wins": 49,
+        "losses": 33,
+        "ptsFor": 97.6,
+        "ptsAgainst": 95.3,
+        "redScore": 5.98,
+        "redPerGame": 0.0729,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Los Angeles Clippers",
+        "coach": "Mike Dunleavy",
+        "wins": 47,
+        "losses": 35,
+        "ptsFor": 101.4,
+        "ptsAgainst": 98.1,
+        "redScore": 3.22,
+        "redPerGame": 0.0393,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Los Angeles Lakers",
+        "coach": "Phil Jackson",
+        "wins": 45,
+        "losses": 37,
+        "ptsFor": 99.0,
+        "ptsAgainst": 98.0,
+        "redScore": 3.13,
+        "redPerGame": 0.0382,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Denver Nuggets",
+        "coach": "George Karl",
+        "wins": 44,
+        "losses": 38,
+        "ptsFor": 99.1,
+        "ptsAgainst": 100.8,
+        "redScore": 4.45,
+        "redPerGame": 0.0542,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Sacramento Kings",
+        "coach": "Rick Adelman",
+        "wins": 44,
+        "losses": 38,
+        "ptsFor": 99.0,
+        "ptsAgainst": 100.5,
+        "redScore": 4.28,
+        "redPerGame": 0.0522,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Washington Wizards",
+        "coach": "Eddie Jordan",
+        "wins": 42,
+        "losses": 40,
+        "ptsFor": 100.7,
+        "ptsAgainst": 99.3,
+        "redScore": -0.19,
+        "redPerGame": -0.0024,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Milwaukee Bucks",
+        "coach": "Terry Stotts",
+        "wins": 40,
+        "losses": 42,
+        "ptsFor": 95.8,
+        "ptsAgainst": 101.4,
+        "redScore": 3.62,
+        "redPerGame": 0.0442,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Utah Jazz",
+        "coach": "Jerry Sloan",
+        "wins": 41,
+        "losses": 41,
+        "ptsFor": 95.9,
+        "ptsAgainst": 93.3,
+        "redScore": -2.32,
+        "redPerGame": -0.0283,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Indiana Pacers",
+        "coach": "Rick Carlisle",
+        "wins": 41,
+        "losses": 41,
+        "ptsFor": 95.4,
+        "ptsAgainst": 99.2,
+        "redScore": 3.26,
+        "redPerGame": 0.0398,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Chicago Bulls",
+        "coach": "Scott Skiles",
+        "wins": 41,
+        "losses": 41,
+        "ptsFor": 97.2,
+        "ptsAgainst": 95.2,
+        "redScore": -1.77,
+        "redPerGame": -0.0215,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "New Orleans Hornets",
+        "coach": "Byron Scott",
+        "wins": 38,
+        "losses": 44,
+        "ptsFor": 97.4,
+        "ptsAgainst": 101.2,
+        "redScore": 0.2,
+        "redPerGame": 0.0024,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Philadelphia 76ers",
+        "coach": "Maurice Cheeks",
+        "wins": 38,
+        "losses": 44,
+        "ptsFor": 95.7,
+        "ptsAgainst": 100.2,
+        "redScore": 0.8,
+        "redPerGame": 0.0098,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Orlando Magic",
+        "coach": "Doc Rivers",
+        "wins": 36,
+        "losses": 46,
+        "ptsFor": 96.2,
+        "ptsAgainst": 101.0,
+        "redScore": -0.99,
+        "redPerGame": -0.012,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Seattle SuperSonics",
+        "coach": "Bob Hill",
+        "wins": 35,
+        "losses": 47,
+        "ptsFor": 101.1,
+        "ptsAgainst": 105.0,
+        "redScore": -2.83,
+        "redPerGame": -0.0346,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Houston Rockets",
+        "coach": "Jeff Van Gundy",
+        "wins": 34,
+        "losses": 48,
+        "ptsFor": 96.0,
+        "ptsAgainst": 99.0,
+        "redScore": -4.41,
+        "redPerGame": -0.0537,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Golden State Warriors",
+        "coach": "Mike Montgomery",
+        "wins": 34,
+        "losses": 48,
+        "ptsFor": 104.5,
+        "ptsAgainst": 113.0,
+        "redScore": -0.9,
+        "redPerGame": -0.011,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Minnesota Timberwolves",
+        "coach": "Dwane Casey",
+        "wins": 33,
+        "losses": 49,
+        "ptsFor": 97.8,
+        "ptsAgainst": 103.4,
+        "redScore": -3.46,
+        "redPerGame": -0.0422,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Boston Celtics",
+        "coach": "Doc Rivers",
+        "wins": 33,
+        "losses": 49,
+        "ptsFor": 95.4,
+        "ptsAgainst": 101.4,
+        "redScore": -3.07,
+        "redPerGame": -0.0375,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Toronto Raptors",
+        "coach": "Sam Mitchell",
+        "wins": 27,
+        "losses": 55,
+        "ptsFor": 95.4,
+        "ptsAgainst": 104.5,
+        "redScore": -7.11,
+        "redPerGame": -0.0866,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Atlanta Hawks",
+        "coach": "Mike Woodson",
+        "wins": 26,
+        "losses": 56,
+        "ptsFor": 97.7,
+        "ptsAgainst": 106.2,
+        "redScore": -8.57,
+        "redPerGame": -0.1045,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Charlotte Bobcats",
+        "coach": "Bernie Bickerstaff",
+        "wins": 26,
+        "losses": 56,
+        "ptsFor": 94.2,
+        "ptsAgainst": 106.0,
+        "redScore": -6.69,
+        "redPerGame": -0.0816,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "New York Knicks",
+        "coach": "Larry Brown",
+        "wins": 23,
+        "losses": 59,
+        "ptsFor": 98.4,
+        "ptsAgainst": 107.2,
+        "redScore": -11.43,
+        "redPerGame": -0.1394,
+        "gp": 82
+    },
+    {
+        "season": "2005-06",
+        "seasonLabel": "2005\u201306",
+        "urlKey": "2006",
+        "name": "Portland Trail Blazers",
+        "coach": "Nate McMillan",
+        "wins": 21,
+        "losses": 61,
+        "ptsFor": 93.2,
+        "ptsAgainst": 103.5,
+        "redScore": -12.34,
+        "redPerGame": -0.1505,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Golden State Warriors",
+        "coach": "Steve Kerr",
+        "wins": 73,
+        "losses": 9,
+        "ptsFor": 114.9,
+        "ptsAgainst": 104.0,
+        "redScore": 24.62,
+        "redPerGame": 0.3002,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "San Antonio Spurs",
+        "coach": "Gregg Popovich",
+        "wins": 67,
+        "losses": 15,
+        "ptsFor": 103.5,
+        "ptsAgainst": 92.9,
+        "redScore": 18.18,
+        "redPerGame": 0.2217,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Oklahoma City Thunder",
+        "coach": "Billy Donovan",
+        "wins": 55,
+        "losses": 27,
+        "ptsFor": 106.3,
+        "ptsAgainst": 103.3,
+        "redScore": 11.58,
+        "redPerGame": 0.1413,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Cleveland Cavaliers",
+        "coach": "Tyronn Lue",
+        "wins": 57,
+        "losses": 25,
+        "ptsFor": 102.7,
+        "ptsAgainst": 100.0,
+        "redScore": 13.75,
+        "redPerGame": 0.1676,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Toronto Raptors",
+        "coach": "Dwane Casey",
+        "wins": 56,
+        "losses": 26,
+        "ptsFor": 102.7,
+        "ptsAgainst": 100.5,
+        "redScore": 13.16,
+        "redPerGame": 0.1605,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Los Angeles Clippers",
+        "coach": "Doc Rivers",
+        "wins": 53,
+        "losses": 29,
+        "ptsFor": 107.2,
+        "ptsAgainst": 105.0,
+        "redScore": 10.24,
+        "redPerGame": 0.1249,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Indiana Pacers",
+        "coach": "Frank Vogel",
+        "wins": 45,
+        "losses": 37,
+        "ptsFor": 103.2,
+        "ptsAgainst": 103.2,
+        "redScore": 4.0,
+        "redPerGame": 0.0488,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Miami Heat",
+        "coach": "Erik Spoelstra",
+        "wins": 48,
+        "losses": 34,
+        "ptsFor": 96.0,
+        "ptsAgainst": 97.4,
+        "redScore": 8.23,
+        "redPerGame": 0.1004,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Atlanta Hawks",
+        "coach": "Mike Budenholzer",
+        "wins": 48,
+        "losses": 34,
+        "ptsFor": 102.9,
+        "ptsAgainst": 103.3,
+        "redScore": 7.33,
+        "redPerGame": 0.0894,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Boston Celtics",
+        "coach": "Brad Stevens",
+        "wins": 48,
+        "losses": 34,
+        "ptsFor": 100.0,
+        "ptsAgainst": 99.8,
+        "redScore": 6.83,
+        "redPerGame": 0.0833,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Charlotte Hornets",
+        "coach": "Steve Clifford",
+        "wins": 48,
+        "losses": 34,
+        "ptsFor": 104.0,
+        "ptsAgainst": 104.0,
+        "redScore": 7.0,
+        "redPerGame": 0.0854,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Detroit Pistons",
+        "coach": "Stan Van Gundy",
+        "wins": 44,
+        "losses": 38,
+        "ptsFor": 100.3,
+        "ptsAgainst": 100.5,
+        "redScore": 3.17,
+        "redPerGame": 0.0387,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Portland Trail Blazers",
+        "coach": "Terry Stotts",
+        "wins": 44,
+        "losses": 38,
+        "ptsFor": 103.6,
+        "ptsAgainst": 105.0,
+        "redScore": 4.14,
+        "redPerGame": 0.0505,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Memphis Grizzlies",
+        "coach": "Dave Joerger",
+        "wins": 42,
+        "losses": 40,
+        "ptsFor": 96.7,
+        "ptsAgainst": 97.7,
+        "redScore": 1.88,
+        "redPerGame": 0.0229,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Dallas Mavericks",
+        "coach": "Rick Carlisle",
+        "wins": 42,
+        "losses": 40,
+        "ptsFor": 102.7,
+        "ptsAgainst": 103.7,
+        "redScore": 1.83,
+        "redPerGame": 0.0223,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Chicago Bulls",
+        "coach": "Fred Hoiberg",
+        "wins": 42,
+        "losses": 40,
+        "ptsFor": 101.5,
+        "ptsAgainst": 101.0,
+        "redScore": 0.58,
+        "redPerGame": 0.007,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Washington Wizards",
+        "coach": "Randy Wittman",
+        "wins": 41,
+        "losses": 41,
+        "ptsFor": 101.9,
+        "ptsAgainst": 101.9,
+        "redScore": 0.0,
+        "redPerGame": 0.0,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Houston Rockets",
+        "coach": "J.B. Bickerstaff",
+        "wins": 41,
+        "losses": 41,
+        "ptsFor": 105.1,
+        "ptsAgainst": 107.0,
+        "redScore": 1.52,
+        "redPerGame": 0.0186,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Utah Jazz",
+        "coach": "Quin Snyder",
+        "wins": 40,
+        "losses": 42,
+        "ptsFor": 100.0,
+        "ptsAgainst": 101.0,
+        "redScore": -0.15,
+        "redPerGame": -0.0018,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Orlando Magic",
+        "coach": "Scott Skiles",
+        "wins": 35,
+        "losses": 47,
+        "ptsFor": 98.0,
+        "ptsAgainst": 100.0,
+        "redScore": -4.28,
+        "redPerGame": -0.0522,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "New Orleans Pelicans",
+        "coach": "Alvin Gentry",
+        "wins": 30,
+        "losses": 52,
+        "ptsFor": 104.0,
+        "ptsAgainst": 113.0,
+        "redScore": -4.6,
+        "redPerGame": -0.056,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Denver Nuggets",
+        "coach": "Michael Malone",
+        "wins": 33,
+        "losses": 49,
+        "ptsFor": 105.0,
+        "ptsAgainst": 109.0,
+        "redScore": -4.87,
+        "redPerGame": -0.0594,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Sacramento Kings",
+        "coach": "George Karl",
+        "wins": 33,
+        "losses": 49,
+        "ptsFor": 98.5,
+        "ptsAgainst": 106.0,
+        "redScore": -2.22,
+        "redPerGame": -0.027,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Milwaukee Bucks",
+        "coach": "Jason Kidd",
+        "wins": 33,
+        "losses": 49,
+        "ptsFor": 103.0,
+        "ptsAgainst": 108.0,
+        "redScore": -4.09,
+        "redPerGame": -0.0498,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Minnesota Timberwolves",
+        "coach": "Sam Mitchell",
+        "wins": 29,
+        "losses": 53,
+        "ptsFor": 99.0,
+        "ptsAgainst": 107.0,
+        "redScore": -5.93,
+        "redPerGame": -0.0723,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "New York Knicks",
+        "coach": "Kurt Rambis",
+        "wins": 32,
+        "losses": 50,
+        "ptsFor": 103.0,
+        "ptsAgainst": 109.0,
+        "redScore": -4.39,
+        "redPerGame": -0.0536,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Phoenix Suns",
+        "coach": "Jeff Hornacek",
+        "wins": 23,
+        "losses": 59,
+        "ptsFor": 104.0,
+        "ptsAgainst": 112.0,
+        "redScore": -12.17,
+        "redPerGame": -0.1484,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Brooklyn Nets",
+        "coach": "Lionel Hollins",
+        "wins": 21,
+        "losses": 61,
+        "ptsFor": 97.0,
+        "ptsAgainst": 107.5,
+        "redScore": -12.45,
+        "redPerGame": -0.1518,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Los Angeles Lakers",
+        "coach": "Byron Scott",
+        "wins": 17,
+        "losses": 65,
+        "ptsFor": 100.0,
+        "ptsAgainst": 113.0,
+        "redScore": -15.5,
+        "redPerGame": -0.189,
+        "gp": 82
+    },
+    {
+        "season": "2015-16",
+        "seasonLabel": "2015\u201316",
+        "urlKey": "2016",
+        "name": "Philadelphia 76ers",
+        "coach": "Brett Brown",
+        "wins": 10,
+        "losses": 72,
+        "ptsFor": 95.0,
+        "ptsAgainst": 110.0,
+        "redScore": -21.53,
+        "redPerGame": -0.2626,
+        "gp": 82
+    }    ,{
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "Golden State Warriors",
+        "coach": "Al Attles",
+        "wins": 59,
+        "losses": 23,
+        "ptsFor": 108.3,
+        "ptsAgainst": 100.6,
+        "redScore": 12.19,
+        "redPerGame": 0.1487,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "Boston Celtics",
+        "coach": "Tommy Heinsohn / Tom Sanders",
+        "wins": 54,
+        "losses": 28,
+        "ptsFor": 106.2,
+        "ptsAgainst": 101.4,
+        "redScore": 9.17,
+        "redPerGame": 0.1119,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "Cleveland Cavaliers",
+        "coach": "Bill Fitch",
+        "wins": 49,
+        "losses": 33,
+        "ptsFor": 104.4,
+        "ptsAgainst": 101.5,
+        "redScore": 5.62,
+        "redPerGame": 0.0685,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "Washington Bullets",
+        "coach": "K.C. Jones",
+        "wins": 48,
+        "losses": 34,
+        "ptsFor": 104.8,
+        "ptsAgainst": 101.4,
+        "redScore": 4.23,
+        "redPerGame": 0.0515,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "Philadelphia 76ers",
+        "coach": "Gene Shue",
+        "wins": 46,
+        "losses": 36,
+        "ptsFor": 105.2,
+        "ptsAgainst": 103.2,
+        "redScore": 3.37,
+        "redPerGame": 0.0411,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "Buffalo Braves",
+        "coach": "Tates Locke / Bob MacKinnon",
+        "wins": 46,
+        "losses": 36,
+        "ptsFor": 110.2,
+        "ptsAgainst": 108.1,
+        "redScore": 3.36,
+        "redPerGame": 0.041,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "Kansas City Kings",
+        "coach": "Phil Johnson",
+        "wins": 44,
+        "losses": 38,
+        "ptsFor": 103.6,
+        "ptsAgainst": 100.9,
+        "redScore": 0.77,
+        "redPerGame": 0.0093,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "Seattle SuperSonics",
+        "coach": "Bill Russell",
+        "wins": 43,
+        "losses": 39,
+        "ptsFor": 104.5,
+        "ptsAgainst": 103.5,
+        "redScore": 1.18,
+        "redPerGame": 0.0144,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "Phoenix Suns",
+        "coach": "John MacLeod",
+        "wins": 42,
+        "losses": 40,
+        "ptsFor": 106.0,
+        "ptsAgainst": 106.2,
+        "redScore": 1.16,
+        "redPerGame": 0.0142,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "Houston Rockets",
+        "coach": "Tom Nissalke",
+        "wins": 40,
+        "losses": 42,
+        "ptsFor": 105.1,
+        "ptsAgainst": 106.9,
+        "redScore": 0.45,
+        "redPerGame": 0.0054,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "Los Angeles Lakers",
+        "coach": "Bill Sharman",
+        "wins": 40,
+        "losses": 42,
+        "ptsFor": 104.7,
+        "ptsAgainst": 106.4,
+        "redScore": 0.37,
+        "redPerGame": 0.0045,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "New Orleans Jazz",
+        "coach": "Scotty Robertson",
+        "wins": 38,
+        "losses": 44,
+        "ptsFor": 102.8,
+        "ptsAgainst": 106.0,
+        "redScore": -0.42,
+        "redPerGame": -0.0051,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "Milwaukee Bucks",
+        "coach": "Larry Costello",
+        "wins": 38,
+        "losses": 44,
+        "ptsFor": 103.5,
+        "ptsAgainst": 106.0,
+        "redScore": -0.98,
+        "redPerGame": -0.0119,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "New York Knicks",
+        "coach": "Red Holzman",
+        "wins": 38,
+        "losses": 44,
+        "ptsFor": 101.8,
+        "ptsAgainst": 103.5,
+        "redScore": -1.59,
+        "redPerGame": -0.0194,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "Portland Trail Blazers",
+        "coach": "Lenny Wilkens",
+        "wins": 37,
+        "losses": 45,
+        "ptsFor": 105.4,
+        "ptsAgainst": 108.9,
+        "redScore": -1.25,
+        "redPerGame": -0.0153,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "Detroit Pistons",
+        "coach": "Herb Brown",
+        "wins": 36,
+        "losses": 46,
+        "ptsFor": 103.2,
+        "ptsAgainst": 107.4,
+        "redScore": -1.67,
+        "redPerGame": -0.0204,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "Atlanta Hawks",
+        "coach": "Cotton Fitzsimmons",
+        "wins": 29,
+        "losses": 53,
+        "ptsFor": 103.1,
+        "ptsAgainst": 108.7,
+        "redScore": -7.67,
+        "redPerGame": -0.0935,
+        "gp": 82
+    },
+    {
+        "season": "1975-76",
+        "seasonLabel": "1975–76",
+        "urlKey": "1976",
+        "name": "Chicago Bulls",
+        "coach": "Dick Motta",
+        "wins": 24,
+        "losses": 58,
+        "ptsFor": 100.3,
+        "ptsAgainst": 107.3,
+        "redScore": -11.62,
+        "redPerGame": -0.1417,
+        "gp": 82
+    }
+];
+
+// ── Season colour palette ────────────────────────────────────────────────────
+const SEASON_COLORS = {
+  "2025-26": "#C9A84C",
+  "2015-16": "#3B82F6",
+  "2005-06": "#10B981",
+  "1995-96": "#F59E0B",
+  "1985-86": "#EF4444",
+  "1975-76": "#8B5CF6",
+};
+
+// ── RED calc (base 2-component) ──────────────────────────────────────────────
+function calcRED(w,l,pf,pa){
+  const gp=w+l; const waa=w-gp*0.5; const E=13.91;
+  const pyth=(pf**E/(pf**E+pa**E))*gp;
+  const red=0.70*waa+0.30*(w-pyth);
+  return {red:parseFloat(red.toFixed(2)),rpg:parseFloat((red/gp).toFixed(4)),gp};
+}
+function cls(s){ return s>6?'excellent':s>2?'good':s>-2?'neutral':s>-6?'poor':'bad'; }
+function medal(r){ return r===1?'🥇':r===2?'🥈':r===3?'🥉':''; }
+function sg(v,d=2){ return (v>=0?'+':'')+v.toFixed(d); }
+
+// ── State ────────────────────────────────────────────────────────────────────
+let allRows = [];
+let liveRows = [];
+let activeYears = new Set(['all']);
+let searchQ = '';
+let sortState = {col:'red',dir:'desc'};
+let liveLoaded = false;
+
+// ── Fetch live 2025-26 data ──────────────────────────────────────────────────
+const FALLBACK_2526 = [
+  {name:"Oklahoma City Thunder", coach:"Mark Daigneault",        w:44,l:14,pf:118.8,pa:107.4},
+  {name:"San Antonio Spurs",     coach:"Mitch Johnson",          w:40,l:16,pf:118.2,pa:108.8},
+  {name:"Detroit Pistons",       coach:"J.B. Bickerstaff",       w:40,l:15,pf:113.2,pa:103.8},
+  {name:"Boston Celtics",        coach:"Joe Mazzulla",           w:37,l:19,pf:119.8,pa:111.6},
+  {name:"New York Knicks",       coach:"Mike Brown",             w:37,l:21,pf:115.2,pa:109.8},
+  {name:"Cleveland Cavaliers",   coach:"Kenny Atkinson",         w:36,l:22,pf:116.4,pa:111.8},
+  {name:"Houston Rockets",       coach:"Ime Udoka",              w:35,l:21,pf:117.1,pa:112.2},
+  {name:"Toronto Raptors",       coach:"Darko Rajakovic",        w:34,l:21,pf:114.6,pa:110.4},
+  {name:"Phoenix Suns",          coach:"Jordan Ott",             w:33,l:25,pf:114.8,pa:112.4},
+  {name:"Los Angeles Clippers",  coach:"Tyronn Lue",             w:32,l:25,pf:113.6,pa:111.8},
+  {name:"Denver Nuggets",        coach:"David Adelman",          w:31,l:26,pf:116.2,pa:113.8},
+  {name:"Los Angeles Lakers",    coach:"JJ Redick",              w:30,l:27,pf:115.8,pa:114.4},
+  {name:"Minnesota Timberwolves",coach:"Chris Finch",            w:29,l:28,pf:113.2,pa:112.6},
+  {name:"Golden State Warriors", coach:"Steve Kerr",             w:29,l:28,pf:116.8,pa:116.2},
+  {name:"Dallas Mavericks",      coach:"Jason Kidd",             w:28,l:29,pf:113.4,pa:114.8},
+  {name:"Milwaukee Bucks",       coach:"Doc Rivers",             w:27,l:30,pf:114.2,pa:115.8},
+  {name:"Memphis Grizzlies",     coach:"Tuomas Iisalo",          w:26,l:31,pf:114.8,pa:116.5},
+  {name:"Miami Heat",            coach:"Erik Spoelstra",         w:25,l:32,pf:111.8,pa:113.9},
+  {name:"Orlando Magic",         coach:"Jamahl Mosley",          w:25,l:32,pf:109.6,pa:111.8},
+  {name:"Philadelphia 76ers",    coach:"Nick Nurse",             w:24,l:33,pf:112.1,pa:115.4},
+  {name:"New Orleans Pelicans",  coach:"James Borrego (interim)",w:22,l:35,pf:110.8,pa:115.2},
+  {name:"Atlanta Hawks",         coach:"Quin Snyder",            w:21,l:36,pf:114.4,pa:118.6},
+  {name:"Charlotte Hornets",     coach:"Charles Lee",            w:18,l:39,pf:111.4,pa:118.2},
+  {name:"Chicago Bulls",         coach:"Billy Donovan",          w:18,l:39,pf:110.6,pa:117.8},
+  {name:"Indiana Pacers",        coach:"Rick Carlisle",          w:16,l:41,pf:118.2,pa:124.6},
+  {name:"Brooklyn Nets",         coach:"Jordi Fernandez",        w:16,l:41,pf:108.8,pa:118.2},
+  {name:"Portland Trail Blazers",coach:"Chauncey Billups",       w:15,l:42,pf:108.6,pa:117.6},
+  {name:"Utah Jazz",             coach:"Will Hardy",             w:13,l:44,pf:107.9,pa:120.1},
+  {name:"Sacramento Kings",      coach:"Doug Christie",          w:13,l:46,pf:107.6,pa:121.8},
+  {name:"Washington Wizards",    coach:"Brian Keefe",            w:10,l:47,pf:105.8,pa:122.4},
+];
+
+function processTeams(teams, season){
+  return teams.map(t=>{
+    const {red,rpg,gp}=calcRED(t.w??t.wins, t.l??t.losses, t.pf??t.ptsFor, t.pa??t.ptsAgainst);
+    return {season, seasonLabel:season, name:t.name, coach:t.coach,
+             wins:t.w??t.wins, losses:t.l??t.losses, red, rpg, gp};
+  });
+}
+
+async function loadLive(){
+  try {
+    const res = await fetch('https://site.api.espn.com/apis/v2/sports/basketball/nba/standings?season=2026',{cache:'no-store'});
+    if(!res.ok) throw new Error('ESPN fail');
+    const data = await res.json();
+    const entries = data?.standings?.entries || [];
+    if(entries.length < 28) throw new Error('incomplete');
+    const COACH_MAP = {
+      "Atlanta Hawks":"Quin Snyder","Boston Celtics":"Joe Mazzulla",
+      "Brooklyn Nets":"Jordi Fernandez","Charlotte Hornets":"Charles Lee",
+      "Chicago Bulls":"Billy Donovan","Cleveland Cavaliers":"Kenny Atkinson",
+      "Dallas Mavericks":"Jason Kidd","Denver Nuggets":"David Adelman",
+      "Detroit Pistons":"J.B. Bickerstaff","Golden State Warriors":"Steve Kerr",
+      "Houston Rockets":"Ime Udoka","Indiana Pacers":"Rick Carlisle",
+      "Los Angeles Clippers":"Tyronn Lue","Los Angeles Lakers":"JJ Redick",
+      "Memphis Grizzlies":"Tuomas Iisalo","Miami Heat":"Erik Spoelstra",
+      "Milwaukee Bucks":"Doc Rivers","Minnesota Timberwolves":"Chris Finch",
+      "New Orleans Pelicans":"James Borrego (interim)","New York Knicks":"Mike Brown",
+      "Oklahoma City Thunder":"Mark Daigneault","Orlando Magic":"Jamahl Mosley",
+      "Philadelphia 76ers":"Nick Nurse","Phoenix Suns":"Jordan Ott",
+      "Portland Trail Blazers":"Chauncey Billups","Sacramento Kings":"Doug Christie",
+      "San Antonio Spurs":"Mitch Johnson","Toronto Raptors":"Darko Rajakovic",
+      "Utah Jazz":"Will Hardy","Washington Wizards":"Brian Keefe"
+    };
+    const teams = entries.map(e=>{
+      const tn=e.team?.displayName||'';
+      const stats={}; e.stats?.forEach(s=>stats[s.name]=s.value);
+      let pf=parseFloat(stats.avgPointsFor||0), pa=parseFloat(stats.avgPointsAgainst||0);
+      if(pf<50){ pf=(stats.pointsFor||0)/(parseInt(stats.wins||0)+parseInt(stats.losses||0))||110; pa=(stats.pointsAgainst||0)/(parseInt(stats.wins||0)+parseInt(stats.losses||0))||110; }
+      return {name:tn,coach:COACH_MAP[tn]||'—',w:parseInt(stats.wins||0),l:parseInt(stats.losses||0),pf,pa};
+    }).filter(t=>t.w+t.l>0);
+    liveRows = processTeams(teams,'2025-26');
+    document.getElementById('srcNote').textContent='Live ESPN data';
+  } catch(e){
+    liveRows = processTeams(FALLBACK_2526,'2025-26');
+    document.getElementById('srcNote').textContent='All-Star Break fallback data';
+  }
+  liveLoaded=true;
+  buildAndRender();
+}
+
+// ── Build master data ────────────────────────────────────────────────────────
+function buildAndRender(){
+  // Combine historical + live
+  const histRows = HIST.map(t=>{
+    return {season:t.season, seasonLabel:t.seasonLabel, name:t.name, coach:t.coach,
+             wins:t.wins, losses:t.losses, red:t.redScore, rpg:t.redPerGame, gp:t.gp};
+  });
+  allRows = [...liveRows, ...histRows];
+  filterAndRender();
+}
+
+// ── Filter + render ──────────────────────────────────────────────────────────
+function filterAndRender(){
+  let rows = [...allRows];
+
+  // Year filter
+  if(!activeYears.has('all')){
+    rows = rows.filter(r=>activeYears.has(r.season));
+  }
+
+  // Search
+  if(searchQ){
+    const q=searchQ.toLowerCase();
+    rows=rows.filter(r=>r.name.toLowerCase().includes(q)||r.coach.toLowerCase().includes(q));
+  }
+
+  // Sort
+  rows.sort((a,b)=>{
+    const c=sortState.col;
+    let av,bv;
+    if(c==='season') { av=a.season; bv=b.season; }
+    else if(c==='team') { av=a.name; bv=b.name; }
+    else if(c==='coach') { av=a.coach; bv=b.coach; }
+    else if(c==='red') { av=a.red; bv=b.red; }
+    else if(c==='rpg') { av=a.rpg; bv=b.rpg; }
+    else if(c==='record') { av=a.wins; bv=b.wins; }
+    else if(c==='gp') { av=a.gp; bv=b.gp; }
+    else { return 0; }
+    if(typeof av==='string') return sortState.dir==='asc'?av.localeCompare(bv):bv.localeCompare(av);
+    return sortState.dir==='asc'?av-bv:bv-av;
+  });
+
+  const tbody=document.getElementById('tbody');
+  tbody.innerHTML='';
+  rows.forEach((r,i)=>{
+    const rank=i+1;
+    const dotColor=SEASON_COLORS[r.season]||'#888';
+    const row=document.createElement('tr');
+    row.innerHTML=`
+      <td class="rank-cell"><span class="medal">${medal(rank)}</span>${rank}</td>
+      <td><span class="season-dot" style="background:${dotColor}"></span><span style="font-size:0.8rem;font-weight:600;color:${dotColor}">${r.seasonLabel}</span></td>
+      <td class="team-name">${r.name}</td>
+      <td class="coach-name">${r.coach}</td>
+      <td><span class="red-badge red-${cls(r.red)}">${sg(r.red)}</span></td>
+      <td class="mono">${sg(r.rpg,4)}</td>
+      <td class="record-cell">${r.wins}-${r.losses}</td>
+      <td class="mono">${r.gp}</td>`;
+    tbody.appendChild(row);
+  });
+  document.getElementById('rowCount').textContent=rows.length;
+}
+
+// ── Year filter buttons ──────────────────────────────────────────────────────
+document.querySelectorAll('.yr-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const yr=btn.dataset.year;
+    if(yr==='all'){
+      activeYears=new Set(['all']);
+      document.querySelectorAll('.yr-btn').forEach(b=>b.classList.remove('on'));
+      btn.classList.add('on');
+    } else {
+      document.querySelector('.yr-btn[data-year="all"]').classList.remove('on');
+      activeYears.delete('all');
+      btn.classList.toggle('on');
+      if(btn.classList.contains('on')) activeYears.add(yr); else activeYears.delete(yr);
+      if(activeYears.size===0) { activeYears.add('all'); document.querySelector('.yr-btn[data-year="all"]').classList.add('on'); }
+    }
+    filterAndRender();
+  });
+});
+
+// ── Sort headers ─────────────────────────────────────────────────────────────
+document.querySelectorAll('th[data-sort]').forEach(th=>{
+  th.addEventListener('click',()=>{
+    const c=th.dataset.sort;
+    sortState.dir=(sortState.col===c&&sortState.dir==='desc')?'asc':'desc';
+    sortState.col=c;
+    filterAndRender();
+  });
+});
+
+// ── Search ───────────────────────────────────────────────────────────────────
+document.getElementById('searchBox').addEventListener('input',e=>{
+  searchQ=e.target.value.trim();
+  filterAndRender();
+});
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+buildAndRender();   // Show historical data immediately
+loadLive();         // Then fetch live data and re-render
+</script>
+</body></html>
